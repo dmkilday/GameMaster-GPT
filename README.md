@@ -3,7 +3,7 @@ Running a D&amp;D bot via OpenAPI
 
 ## Requirements
 - Tested on Python 3.7.4
-- An OpenAI secret key, retrievable at [platform.openai.com](https://platform.openai.com/account/api-keys). Paste this into the *secret_key* variable within *[oauth_secret.py](https://github.com/depwl9992/faith-n-tech_d7d/blob/main/oauth_secret.py.dist)*
+- An OpenAI secret key, retrievable at [platform.openai.com](https://platform.openai.com/account/api-keys). Paste this into the *secret_key* variable within [oauth_secret.py](https://github.com/depwl9992/faith-n-tech_d7d/blob/main/oauth_secret.py.dist)
 
 `pip install openai`
 
