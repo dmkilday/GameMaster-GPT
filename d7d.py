@@ -27,7 +27,16 @@ while chat_active:
         break
     elif user_msg == "log and exit":
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
-        filename = "Logs/Log_"+timestamp+".json"
+        dialog.append({"role":"user", "content": "Generate a 8-20 alphanumeric title for this adventure to be used in a filename."})
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  
+            messages = dialog
+        )
+        
+        assistant_msg = completion['choices'][0]['message']['content']
+        
+        title = ''.join(c for c in assistant_msg if c.isalnum())
+        filename = "Logs/Log_"+timestamp+" - "+title+".json"
         print("\nLog saved to "+filename)
         file = open(filename,"w")
         file.write(json.dumps(dialog))
