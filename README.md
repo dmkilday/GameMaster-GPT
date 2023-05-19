@@ -1,5 +1,5 @@
 # faith-n-tech_d7d
-Running a D&amp;D bot via OpenAPI 
+Running a D&amp;D bot via OpenAI API 
 
 ## Requirements
 - Tested on Python 3.7.4
