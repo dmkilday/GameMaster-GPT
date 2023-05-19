@@ -1,0 +1,42 @@
+DM: What is the premise of your adventure?
+
+Player: I am running a quick interaction with the local barkeeper.
+
+DM: You find yourself in a cozy, bustling tavern. The air is thick with the smell of ale, and the sound of raucous laughter and clinking tankards fills your ears.
+ You make your way to the bar, where a rotund, friendly-looking dwarf greets you warmly.
+
+"What can I get for you, lass/lad?" he asks, polishing a mug with a cloth.
+
+Player: I'm not one of those mamby pamby "non-binary" folks. I'm a rugged outdoorsman, and I'll have a full mug o' rum, thank ye kindly!
+
+DM: The dwarf chuckles heartily. "Ah, I see you're a person who knows what they like! Coming right up." He pours you a full mug of thick, dark rum and slides it a
+cross the counter towards you. "Be careful with this one, lad. It's strong enough to knock a bull over."
+
+He eyes you up and down for a moment, as if sizing you up. "Say, you look like you might be handy with a sword. I heard rumors of a group of bandits lurking on th
+e outskirts of town. If you're looking to lend some muscle in exchange for coin, I bet the local sheriff would be happy to pay for your services."
+
+Player: Thanks for the tip! I'll look into it. But for now I'm just a wanderin' traveler looking for room. Does this fine establishment have any accomodations?
+
+DM: "Aye, we have a few rooms upstairs available for rent," the dwarf replies. "They're not much, mind you, just a bed and a chamber pot, but it's a roof over you
+r head, and we keep 'em clean."
+
+He gives you a curious look. "You seem like an honest sort. I hope I'm not out of line for asking, but are you looking to stay for just one night, or are you plan
+ning on sticking around for a while?"
+
+Player: I'll be stayin' until I can find work. That sheriff's bandit-hunting job might prove useful, though, so let's make it for the night. Here, have some gold
+for your trouble. [I hand over a few gold sovereigns, hoping it's enough]
+Traceback (most recent call last):
+  File "d7d_v0.1.py", line 41, in <module>
+    messages = dialog
+  File "C:\Users\Daniel\Nextcloud\D&D\OpenAI\Python\lib\site-packages\openai\api_resources\chat_completion.py", line 25, in create
+    return super().create(*args, **kwargs)
+  File "C:\Users\Daniel\Nextcloud\D&D\OpenAI\Python\lib\site-packages\openai\api_resources\abstract\engine_api_resource.py", line 160, in create
+    request_timeout=request_timeout,
+  File "C:\Users\Daniel\Nextcloud\D&D\OpenAI\Python\lib\site-packages\openai\api_requestor.py", line 230, in request
+    resp, got_stream = self._interpret_response(result, stream)
+  File "C:\Users\Daniel\Nextcloud\D&D\OpenAI\Python\lib\site-packages\openai\api_requestor.py", line 628, in _interpret_response
+    stream=False,
+  File "C:\Users\Daniel\Nextcloud\D&D\OpenAI\Python\lib\site-packages\openai\api_requestor.py", line 688, in _interpret_response_line
+    rbody, rcode, resp.data, rheaders, stream_error=stream_error
+openai.error.RateLimitError: That model is currently overloaded with other requests. You can retry your request, or contact us through our help center at help.ope
+nai.com if the error persists. (Please include the request ID ceebac03b096dedad2afe7f85c52413b in your message.)

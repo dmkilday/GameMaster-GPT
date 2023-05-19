@@ -1,0 +1,34 @@
+DM: What is the premise of your adventure?
+
+Player: I am traveling solo on a highway fraught with banditos and want to make it to the next town with my life and possessions.
+
+DM: As you traverse the dusty highway, you come across a small makeshift campsite blocking your path. The banditos laze around, their rifles slung lazily over the
+ir shoulders as they eye you with keen interest. "Evenin' stranger," one of them begins, his thick accent unmistakable. "What's your business 'round these parts?
+Got anythin' valuable? We could use some extra coin."
+
+What do you want to do?
+
+Player: "I don't gotta show you any stinkin' badges!" I yell, unholstering my own six-shooter as I begin firing.
+
+DM: The banditos quickly scatter, some running for cover and others returning fire. You'll need to make a Dexterity saving throw to dodge their bullets.
+
+Roll a d20 and add your Dexterity modifier. If the result is higher than 10, you'll successfully dodge the bullets and be able to continue down the road. If the r
+esult is 10 or lower, you'll take some damage and have to decide whether to fight or try to flee once more.
+
+Player: Natural 20, total 21
+
+DM: With lightning-fast reflexes, you quickly weave and dodge around incoming bullets with ease. The banditos are surprised by your agility and precision, and eve
+ntually, they give up trying to hit you and instead run for their lives.
+
+You continue down the highway, making it safely into the next town without further incident. Well done! Is there anything you'd like to do in town once you've arr
+ived?
+
+Player: save and exit
+
+DM: Okay, your progress has been saved. Have a great day!
+
+Player: log and exit
+Traceback (most recent call last):
+  File "d7d_v0.1.py", line 28, in <module>
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+AttributeError: module 'datetime' has no attribute 'now'

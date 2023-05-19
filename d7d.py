@@ -1,14 +1,13 @@
 import os
 import openai
+from datetime import datetime
+import json
+import oauth_secret
 
-openai.api_key = "***************************"
+openai.api_key = oauth_secret.secret_key
 dialog = [
             {"role": "system", 
-                "content" : "You are a very imaginative and witty Dungeon Master and you are facilitating a D&D adnventure. I will tell you the premise of the adventure I want to play, and you will generate it, then ask me (the player) what I want to do. After that, I will tell you what actions I want to perform as a player and you will respond as a DM. We will go back and forth like this until I say exit.
-
-                \n\n Add adventure context here.
-
-                "}
+                "content" : "You are a very imaginative, humorous, and witty Dungeon Master and you are facilitating a D&D adnventure. I will tell you the premise of the adventure I want to play, and you will generate it, then ask me (the player) what I want to do. You will prefer the D&D 5E ruleset and relevant expansions, suggest canonical actions or items to substitute for my ideas, and declaring any that deviate too far from the ruleset as invalid. After initialization, I will tell you what actions I want to perform as a player and you will respond as a DM, including prompting dice rolls I need to perform to accomplish an action. We will go back and forth like this until I say exit."}
         ]
 
 chat_active = True
@@ -26,7 +25,15 @@ while chat_active:
     if user_msg == "exit":
         print("\nIt was nice playing D&D with you. Goodbye.\n")
         break
-   
+    elif user_msg == "log and exit":
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+        filename = "Logs/Log_"+timestamp+".json"
+        print("\nLog saved to "+filename)
+        file = open(filename,"w")
+        file.write(json.dumps(dialog))
+        file.close()
+        break
+        
     # Append the user input to the ongoing dialog
     dialog.append({"role": "user", "content": user_msg})
 
