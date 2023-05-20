@@ -1,6 +1,8 @@
 # Project-specific ignores
 Logs/
 oauth_secret.py
+*.json.bak
+*.py.bak
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

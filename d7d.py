@@ -20,8 +20,8 @@ dialog = [
 chat_active = True
 
 #Import character sheet
-character_file = input("\nIf you have a character sheet file, what is the file name? ")
-with open(character_file, 'r') as file:
+character_file = input("\nIf you have a character sheet file in the Data directory, what is the file name? ")
+with open("Data/" + character_file, 'r') as file:
     character_data = file.read()
 
 dialog.append({"role": "user" , "content":"The players character sheet is as follows.\n\n" + character_data})
