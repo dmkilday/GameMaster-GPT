@@ -1,0 +1,50 @@
+Character Name: Tumbleweed Riddlefoot
+Race: Halfling
+Class: Bard
+Level: 16
+Background: Entertainer
+Alignment: Chaotic Good
+
+Ability Scores (not including any magic item modifiers):
+Strength (STR): 8
+Dexterity (DEX): 20
+Constitution (CON): 12
+Intelligence (INT): 14
+Wisdom (WIS): 12
+Charisma (CHA): 20
+Proficiency Bonus: +5
+Armor Class (AC): 17 (Studded leather armor + Dexterity modifier)
+Hit Points (HP): 104 (8 + 15d8 + 16 for Constitution modifier)
+Speed: 25ft
+Saving Throws: Dexterity, Charisma
+Skills: Acrobatics, Performance, Persuasion, Stealth, Deception, Sleight of Hand
+Tools: Lute, Flute, Drum, Disguise Kit, Thieves' Tools
+Languages: Common, Halfling, Elvish
+
+Racial Traits:
+Lucky: When Tumbleweed rolls a 1 on the d20 for an attack roll, ability check, or saving throw, he can reroll the die and must use the new roll.
+Brave: Tumbleweed has advantage on saving throws against being frightened.
+Halfling Nimbleness: Tumbleweed can move through the space of any creature that is of a size larger than his.
+Stout Resilience: Tumbleweed has advantage on saving throws against poison, and he has resistance against poison damage.
+
+Class Features:
+Bardic Inspiration (d10): Tumbleweed can inspire others through stirring words or music, granting them a Bardic Inspiration die, a d10.
+Jack of All Trades: Tumbleweed can add half his proficiency bonus, rounded down, to any ability check he makes that doesn't already include his proficiency bonus.
+Expertise: Tumbleweed has double proficiency bonus on Performance and Persuasion skills.
+Magical Secrets: Tumbleweed learned two spells from any class, including spells normally not available to bards.
+Song of Rest (d10): Tumbleweed can use soothing music or oration to help revitalize his wounded allies during a short rest.
+Countercharm: Tumbleweed can use musical notes or words of power to disrupt mind-influencing effects.
+Bard College (College of Lore): Tumbleweed has additional proficiencies and cutting words as reactions.
+
+Spells:
+Cantrips: Vicious Mockery, Minor Illusion
+1st Level: Cure Wounds, Disguise Self, Charm Person, Sleep
+2nd Level: Invisibility, Silence, Lesser Restoration
+3rd Level: Hypnotic Pattern, Dispel Magic, Leomund's Tiny Hut
+4th Level: Greater Invisibility, Dimension Door
+5th Level: Hold Monster, Scrying
+6th Level: Mass Suggestion, True Seeing
+7th Level: Teleport, Mirage Arcane
+8th Level (Magical Secrets): Wish (from Sorcerer/Wizard), Power Word Stun (from Warlock/Wizard)
+
+Equipment: Studded Leather Armor, Rapier, Dagger, Lute, Component Pouch, Entertainer's Pack, A set of fine clothes, Disguise Kit, Thieves' Tools, A small collection of trophies from performances (medals, ribbons, etc), a pouch containing 25
