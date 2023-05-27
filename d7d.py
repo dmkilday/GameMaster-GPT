@@ -3,13 +3,35 @@ import openai
 from datetime import datetime
 import json
 import oauth_secret
+import re
+import random
 
 openai.api_key = oauth_secret.secret_key
+
+# Checks to see if a string is a dice roll in the format #d# (e.g. 1d20)
+def isRoll(user_msg):
+	
+	retVal = False
+
+	# Check to see if the string ends with d# (e.g. d20)
+	match = re.search('d\d+$', user_msg)
+	
+	# If there is a match, grap the values before and after the d
+	if match:
+		die = user_msg.split("d")
+		
+		# Check if the value before the d is blank or a number. 
+		if (die[0]=="" or die[0].isnumeric()):
+			retVal = True
+
+	return retVal
 
 #dialog = [
 #            {"role": "system", 
 #                "content" : "You are a very imaginative, humorous, and witty Dungeon Master and you are facilitating a D&D adnventure. I will tell you the premise of the adventure I want to play, and you will generate it, then ask me (the player) what I want to do. You will adhere to the D&D 5E ruleset and relevant expansions, suggest canonical actions or items to substitute for my ideas, and declaring any that deviate too far from the ruleset as invalid. After initialization, I will tell you what actions I want to perform as a player and you will respond as a DM asking me what I want to do, including prompting dice rolls I need to perform to accomplish any action. You must require that I roll dice for every action to determine if the action succeeds. We will go back and forth like this until I say exit."}
 #        ]
+
+reminder = "Reminder: After you respond to what I say, you must ask me what I would like to do. Also, if I perform an action on my turn that would typically require a roll, you must ask me to roll the appropriate dice."
 
 dialog = [
             {"role": "system", 
@@ -60,9 +82,37 @@ while chat_active:
         file.close()
        
         break
+    elif isRoll(user_msg):		
+        # Get the number of dice and the die size
+        die = user_msg.split("d")
+		
+        # If there's not a number before the d, assume it's a 1
+        if (die[0]==""):
+            die_count = 1
+        else:
+            die_count = int(die[0])
+        die_size = int(die[1])
+		
+        # Build the Dice role string
+        rollString = "I rolled " + str(die_count) + " d" + str(die_size) + " for "
+        die_total = 0
+        for i in range(1, die_count+1):
+            die_value = random.randrange(1, die_size)
+            die_total += die_value # Add to the die total
+            if i == 1:
+                rollString += "a " + str(die_value)
+            elif i == die_count:
+                rollString += ", and a " + str(die_value) + " for a total of " + str(die_total) + "." 
+            else:
+                rollString += ", a " + str(die_value)
+
+        print("\nPlayer: " + rollString)
+		
+        # Set the user message to the roll results
+        user_msg = rollString
         
     # Append the user input to the ongoing dialog
-    dialog.append({"role": "user", "content": user_msg})
+    dialog.append({"role": "user", "content": user_msg + " " + reminder})
 
     # Query chatbot
     completion = openai.ChatCompletion.create(
