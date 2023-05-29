@@ -70,7 +70,7 @@ def safe_ChatCompletion(model, messages):
 
 response_len_max = 40
    
-reminder = "Reminder: After you respond to what I say (in " + str(response_len_max) + " words or less), you must ask me what I would like to do. Also, I want you to require dice rolls of me for ability checks, skill checks, savings throws, attack rolls, and contests."
+reminder = "Reminder: After you respond to what I say (in " + str(response_len_max) + " words or less), you must ask me what I would like to do unless a dice roll or NPC interaction is required. Also, I want you to require dice rolls of me for ability checks, skill checks, savings throws, attack rolls, and contests. Remind me of my current hitpoints each turn."
 
 dialog = [
             {"role": "system", 
@@ -82,7 +82,7 @@ chat_active = True
 player_file_check = True
 
 #Import character sheet
-character_file = input("\nDM: If you have a character sheet file in the Data directory, what is the file name? Leave blank and hit Enter for me to generate a character.")
+character_file = input("\nDM: If you have a character sheet file in the Data directory, what is the file name? Leave blank and hit Enter for me to generate a character.\n\nPlayer: ")
 if character_file != "":
     while player_file_check:
         if os.path.isfile("Data/" + character_file):    
@@ -90,7 +90,7 @@ if character_file != "":
                 character_data = file.read()
             break
         else:
-            character_file = input(f"\n{Fore.RED}Error{Style.RESET_ALL}: Sorry, I couldn't find that file. Try again? Leave blank and hit Enter for me to generate a character.")
+            character_file = input(f"\n{Fore.RED}Error{Style.RESET_ALL}: Sorry, I couldn't find that file. Try again? Leave blank and hit Enter for me to generate a character.\n\nPlayer: ")
             if character_file != "":
                 continue
             else:
@@ -126,7 +126,7 @@ while chat_active:
         dialog.append({"role":"user", "content": adventure_premise})
 
         # Show the user the adventure premise
-        print("\nAdventure Premise: " + adventure_premise)
+        print("\nAdventure Premise:\n" + adventure_premise)
     
     adventure_started = True
 
