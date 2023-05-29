@@ -5,8 +5,11 @@ import json
 import oauth_secret
 import re
 import random
+from colorama import Fore
+from colorama import Style
 
 openai.api_key = oauth_secret.secret_key
+os.system('color')
 
 # Checks to see if a string is a dice roll in the format #d# (e.g. 1d20)
 def isRoll(user_msg):
@@ -28,11 +31,45 @@ def isRoll(user_msg):
 
 # Retrieves the content from OpenAI API response
 def GetContent(apiresponse):
-    content = apiresponse['choices'][0]['message']['content']
+    if apiresponse == -1:
+        content = -1
+    else:
+        content = apiresponse['choices'][0]['message']['content']
     return content
 
-response_len_max = 40
+def safe_ChatCompletion(model, messages):
+    if messages == "error_test":
+        print(f"{Fore.RED}Test Error{Style.RESET_ALL}: We're not sending anything to OpenAI. This should be red!")
+        return -1
+    else:
+        try:
+            response = openai.ChatCompletion.create(model=model,messages=messages)
+        except openai.error.APIError as e:
+            print(f"{Fore.RED}OpenAI API returned an API Error{Style.RESET_ALL}: {e}")
+            return -1
+        except openai.error.APIConnectionError as e:
+            print(f"{Fore.RED}Failed to connect to OpenAI API{Style.RESET_ALL}: {e}")
+            return -1
+        except openai.error.RateLimitError as e:
+            print(f"{Fore.RED}OpenAI API request exceeded rate limit{Style.RESET_ALL}: {e}")
+            return -1
+        except openai.error.Timeout as e:
+            print(f"{Fore.RED}OpenAI API request timed out{Style.RESET_ALL}: {e}")
+            return -1
+        except openai.error.InvalidRequestError as e:
+            print(f"{Fore.RED}Invalid request to OpenAI API{Style.RESET_ALL}: {e}")
+            return -1
+        except openai.error.AuthenticationError as e:
+            print(f"{Fore.RED}Authentication error with OpenAI API{Style.RESET_ALL}: {e}")
+            return -1
+        except openai.error.ServiceUnavailableError as e:
+            print(f"{Fore.RED}OpenAI API service unavailable{Style.RESET_ALL}: {e}")
+            return -1
+        else:
+            return response
 
+response_len_max = 40
+   
 reminder = "Reminder: After you respond to what I say (in " + str(response_len_max) + " words or less), you must ask me what I would like to do. Also, I want you to require dice rolls of me for ability checks, skill checks, savings throws, attack rolls, and contests."
 
 dialog = [
@@ -42,19 +79,33 @@ dialog = [
 
 
 chat_active = True
+player_file_check = True
 
 #Import character sheet
-character_file = input("\nIf you have a character sheet file in the Data directory, what is the file name? ")
-with open("Data/" + character_file, 'r') as file:
-    character_data = file.read()
-
-dialog.append({"role": "user" , "content":"The players character sheet is as follows.\n\n" + character_data})
-
+character_file = input("\nDM: If you have a character sheet file in the Data directory, what is the file name? Leave blank and hit Enter for me to generate a character.")
+if character_file != "":
+    while player_file_check:
+        if os.path.isfile("Data/" + character_file):    
+            with open("Data/" + character_file, 'r') as file:
+                character_data = file.read()
+            break
+        else:
+            character_file = input(f"\n{Fore.RED}Error{Style.RESET_ALL}: Sorry, I couldn't find that file. Try again? Leave blank and hit Enter for me to generate a character.")
+            if character_file != "":
+                continue
+            else:
+                character_data = "The character is random. Please generate its name, race, class and other stats for me."
+                break
+else:
+    character_data = "The character is random. Please generate its name, race, class and other stats for me"
+    
+dialog.append({"role": "user" , "content":"The players character sheet is as follows:\n\n" + character_data})
+   
 # Welcome user and query the for initial chat topic
 print("\nDM: What is the premise of your adventure? Leave blank and hit Enter for me to generate a premise.\n")
 
 adventure_dialog = [
-                        {"role": "user" , "content": "Compe up with a cool premise for a D&D adventure premise for the following character. " + character_data}
+                        {"role": "user" , "content": "Come up with a cool premise for a D&D adventure using the following character. " + character_data}
                    ]
 
 adventure_started = False
@@ -67,7 +118,7 @@ while chat_active:
 
     # If they didn't enter anything for a premise, then generate one for them.
     if (user_msg == "" and adventure_started == False):
-        completion = openai.ChatCompletion.create(
+        completion = safe_ChatCompletion(
             model="gpt-3.5-turbo",  
             messages = adventure_dialog
         )
@@ -88,14 +139,19 @@ while chat_active:
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
         
         # Ask bot for a nice title.
-        dialog.append({"role":"user", "content": "Generate a 8-20 alphanumeric title for this adventure to be used in a filename."})
+        dialog.append({"role":"user", "content": "Generate a 8-20 character alphanumeric title for this adventure to be used in a filename."})
         
-        # Write the dialog to a file
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  
+        # Exit with generated title        
+        completion = safe_ChatCompletion(
+            model="gpt-3.5-turbo",
             messages = dialog
         )
-        assistant_msg = completion['choices'][0]['message']['content']
+
+        if completion == -1:
+            assistant_msg = "ExitedWithError"
+        else:
+            assistant_msg = GetContent(completion)
+            
         title = ''.join(c for c in assistant_msg if c.isalnum())
         filename = "Logs/" + title + " - " + timestamp + ".json"
         print("\nLog saved to "+filename)
@@ -103,6 +159,12 @@ while chat_active:
         file.write(json.dumps(dialog))
         file.close()   
         break
+    elif user_msg == "error_test":
+        completion = safe_ChatCompletion(
+            model="gpt-3.5-turbo",
+            messages = "error_test"
+        )
+        continue
     elif isRoll(user_msg):		
         # Get the number of dice and the die size
         die = user_msg.split("d")
@@ -135,12 +197,15 @@ while chat_active:
     # Append the user input to the ongoing dialog
     dialog.append({"role": "user", "content": user_msg + " " + reminder})
 
+
     # Query chatbot
-    completion = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  
+    completion = safe_ChatCompletion(
+        model="gpt-3.5-turbo",
         messages = dialog
     )
-    
+    if completion == -1:
+        continue
+            
     # Capture the AI's response
     assistant_msg = GetContent(completion)
 
