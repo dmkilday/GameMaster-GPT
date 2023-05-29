@@ -1,0 +1,119 @@
+If you have a character sheet file in the Data directory, what is the file name? Bard.txt
+
+DM: What is the premise of your adventure? Leave blank and hit Enter for me to generate a premise.
+
+Player:
+
+Adventure Premise: gold pieces
+
+Adventure Premise:
+
+Tumbleweed Riddlefoot receives an urgent message from his former mentor, a fellow bard known as "Silver Tongue" Samson. Samson informs Tumbleweed that his latest performance in the city of Waterdeep was interrupted by a group of unknown individuals who stole a legendary instrument known as the "Symphony of Shadows." This instrument has the power to cast a spell of darkness over an entire city.
+
+Samson believes that the thieves are working for an evil organization known as the "Umbral Circle," who seek to use the Symphony to plunge the world into eternal darkness. Samson has already tracked down the Umbral Circle's base of operations in a remote island and sends Tumbleweed there to retrieve the instrument and stop the organization once and for all.
+
+As Tumbleweed arrives on the island, he realizes that the Umbral Circle's members are not your average humanoids. They are shadowy creatures from another plane of existence, and they have the power to manipulate darkness and shadows to their will. Moreover, they have enchanted the Symphony of Shadows with powerful magic, making it nearly impossible to retrieve without defeating their leader, a shadowy demon lord.
+
+Tumbleweed must use all his bardic skills to infiltrate the Umbral Circle's lair, overcome their dark magic, and defeat their leader to retrieve the Symphony of Shadows and restore light to the world. Along the way, he may encounter other adventurers who are also seeking revenge against the Umbral Circle or try to convince some of the members to leave the organization and redeem themselves.
+
+DM: You arrive at the shores of the island, where you notice the land is almost entirely covered in shadows. As you approach, two shadowy figures step out of the darkness. "What business do you have on our island?" they hiss. Make an insight check.
+
+Player: roll 1d20
+
+DM: You rolled a 17 on your insight check, and you can tell that the shadowy figures seem hostile and untrusting of your presence. They may attack if you don't give them a good reason to let you pass. What would you like to do?
+
+Player: I attempt to play them a soothing song.
+
+DM: You start playing a song on your lute, and the shadowy figures seem to relax a little bit. However, you can sense their distrust is not completely gone. They ask you what brings you to their island. Make a persuasion check. What would you like to do next?
+
+Player: roll 1d20
+
+DM: You rolled a 19 on your persuasion check, and the shadowy figures seem convinced. They let you pass but warn you to stay out of trouble. As you move deeper into the island, you can feel the darkness becoming thicker. What would you like to do next?
+
+Player: I want to search the underbrush for clues.
+
+DM: You search the underbrush and find a set of footprints leading towards a mountain. The footprints seem to be made by a group of people carrying a large, heavy object. Make a survival check to see if you can follow the tracks. What would you like to do next?
+
+Player: roll 1d20
+
+DM: You rolled a 16 on your survival check, and you are able to follow the tracks through the underbrush, which leads you to the base of the mountain. You notice several shadowy figures patrolling the area. What would you like to do next?
+
+Player: I want to sneak past them and continue to follow the footprints wherever they lead.
+
+DM: You try to move stealthily past the patrolling figures, but one of them spots you at the last minute. The shadowy figure hisses and steps towards you aggressively, drawing its sword. Roll for initiative. What would you like to do next?
+
+Player: roll 1d20
+
+DM: You rolled a 12 for initiative. It is your turn first. The shadowy figure is about 20 feet away from you. What would you like to do?
+
+Player: what spells do I have prepared?
+
+DM: As a Bard, you can always cast your cantrips, Vicious Mockery and Minor Illusion. You also have access to your full spell list, which includes Cure Wounds, Disguise Self, Charm Person, Sleep, and more. You can use any of your prepared spells in this encounter. What would you like to do?
+
+Player: I want to cast sleep on the figure advancing at me.
+
+DM: You cast Sleep, and a magical aura surrounds the shadowy figure. The aura slowly starts to dissipate, and the figure slumps to the ground, fast asleep. You can hear more shadowy figures approaching from the distance. What would you like to do next?
+
+Player: I want to duck into the undergrowth in an attempt to escape. I roll a 1d20 for stealth.
+
+DM: You roll a 25 on your stealth check, and you manage to quickly duck into the undergrowth before the other shadowy figures can spot you. You can hear them calling out to each other, trying to find you. You have a moment of peace to decide your next move. What would you like to do?
+
+Player: Wait for them to pass.
+
+DM: You wait patiently for the shadowy figures to pass, and you can hear the sounds of leaves crunching under their weight as they move further away from you. You are now alone, and it's time to continue your search for the Symphony of Shadows. What would you like to do next?
+
+Player: REsume the search by following the footprints.
+
+DM: You continue to follow the footprints, which lead you to a hidden entrance on the side of the mountain. The entrance seems to be guarded. Make a perception check to see if you can spot any traps or hidden dangers. What would you like to do next?
+
+Player: 1d20
+
+Player: I rolled 1 d20 for a 17
+
+DM: With your keen perception, you notice that the entrance is booby-trapped. You point it out and carefully disarm the trap, allowing you to enter the hidden entrance safely. You can hear faint music coming from inside. What would you like to do next?
+
+Player: I play on my instrument. Can you clarify what my instrument is?
+
+DM: As a bard, you have several instruments to choose from, including a lute, flute, and drum. It's up to you to decide which one Tumbleweed Riddlefoot would prefer to play.
+
+Player: Then I would choose a flute. I play the harmony to what I'm hearing on my flute.
+
+DM: You play the harmony to the music you hear from inside, and as you reach the end of the tune, the door in front of you swings open. You see several shadowy creatures staring at you. They seem to be mesmerized by your music. You have a chance to speak with them. What would you like to do next?
+
+Player: I sing in the same enchanting tune, "Where is your leader oh delightful and skilfull members of the Umbral Circle? Tell, oh tell me where he is!"
+
+DM: Your enchanting music seems to have an effect on the shadowy creatures, and they tell you their leader is at the top of the mountain, guarding the Symphony of Shadows. However, they warn you that he is extremely powerful and defeating him won't be easy. What would you like to do next?
+
+Player: I sing to them, 'In my heart of hearts, I thank you, most gracious acolytes! I am not the droid you are looking for, but you may go about your duties as if I were never here!'
+
+DM: Your music and words seem to have a calming effect on the shadowy creatures, and they nod in agreement before silently returning to their duties. You are now left alone to climb the mountain and confront the Shadow Demon guarding the Symphony of Shadows. What would you like to do next?
+
+Player: I would like to ascend the mountain, carefully picking my way up the trail and dodging any loose rocks.
+
+DM: You start to ascend the mountain, carefully picking your way up the trail. As you get closer to the summit, the wind starts to pick up, and the temperature drops. You hear a voice in your head telling you to turn back. Make a wisdom saving throw. What would you like to do next?
+
+Player: 1d20
+
+Player: I rolled 1 d20 for a 14
+
+DM: You feel a strong pull of
+
+Player: What's the strong pull?
+Traceback (most recent call last):
+  File "D:\My Programs\OpenAI\d7d.py", line 139, in <module>
+    completion = openai.ChatCompletion.create(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\My Programs\OpenAI\venv\Lib\site-packages\openai\api_resources\chat_completion.py", line 25, in create
+    return super().create(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\My Programs\OpenAI\venv\Lib\site-packages\openai\api_resources\abstract\engine_api_resource.py", line 153, in create
+    response, _, api_key = requestor.request(
+                           ^^^^^^^^^^^^^^^^^^
+  File "d:\My Programs\OpenAI\venv\Lib\site-packages\openai\api_requestor.py", line 230, in request
+    resp, got_stream = self._interpret_response(result, stream)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\My Programs\OpenAI\venv\Lib\site-packages\openai\api_requestor.py", line 624, in _interpret_response
+    self._interpret_response_line(
+  File "d:\My Programs\OpenAI\venv\Lib\site-packages\openai\api_requestor.py", line 687, in _interpret_response_line
+    raise self.handle_error_response(
+openai.error.InvalidRequestError: This model's maximum context length is 4097 tokens. However, your messages resulted in 4168 tokens. Please reduce the length of the messages.
