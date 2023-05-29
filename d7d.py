@@ -26,12 +26,14 @@ def isRoll(user_msg):
 
 	return retVal
 
-#dialog = [
-#            {"role": "system", 
-#                "content" : "You are a very imaginative, humorous, and witty Dungeon Master and you are facilitating a D&D adnventure. I will tell you the premise of the adventure I want to play, and you will generate it, then ask me (the player) what I want to do. You will adhere to the D&D 5E ruleset and relevant expansions, suggest canonical actions or items to substitute for my ideas, and declaring any that deviate too far from the ruleset as invalid. After initialization, I will tell you what actions I want to perform as a player and you will respond as a DM asking me what I want to do, including prompting dice rolls I need to perform to accomplish any action. You must require that I roll dice for every action to determine if the action succeeds. We will go back and forth like this until I say exit."}
-#        ]
+# Retrieves the content from OpenAI API response
+def GetContent(apiresponse):
+    content = apiresponse['choices'][0]['message']['content']
+    return content
 
-reminder = "Reminder: After you respond to what I say, you must ask me what I would like to do. Also, if I perform an action on my turn that would typically require a roll, you must ask me to roll the appropriate dice."
+response_len_max = 40
+
+reminder = "Reminder: After you respond to what I say (in " + str(response_len_max) + " words or less), you must ask me what I would like to do. Also, I want you to require dice rolls of me for ability checks, skill checks, savings throws, attack rolls, and contests."
 
 dialog = [
             {"role": "system", 
@@ -49,7 +51,13 @@ with open("Data/" + character_file, 'r') as file:
 dialog.append({"role": "user" , "content":"The players character sheet is as follows.\n\n" + character_data})
 
 # Welcome user and query the for initial chat topic
-print("\nDM: What is the premise of your adventure?\n")
+print("\nDM: What is the premise of your adventure? Leave blank and hit Enter for me to generate a premise.\n")
+
+adventure_dialog = [
+                        {"role": "user" , "content": "Compe up with a cool premise for a D&D adventure premise for the following character. " + character_data}
+                   ]
+
+adventure_started = False
 
 # Enter dialog loop
 while chat_active:
@@ -57,10 +65,25 @@ while chat_active:
     # Prompt user for there response
     user_msg = input("Player: ")
 
+    # If they didn't enter anything for a premise, then generate one for them.
+    if (user_msg == "" and adventure_started == False):
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  
+            messages = adventure_dialog
+        )
+        adventure_premise = GetContent(completion)
+        dialog.append({"role":"user", "content": adventure_premise})
+
+        # Show the user the adventure premise
+        print("\nAdventure Premise: " + adventure_premise)
+    
+    adventure_started = True
+
     # Check if user wants to exit
     if user_msg == "exit":
         print("\nIt was nice playing D&D with you. Goodbye.\n")
         break
+    # Check if user wants to log their adventure then exit
     elif user_msg == "log and exit":
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
         
@@ -74,13 +97,11 @@ while chat_active:
         )
         assistant_msg = completion['choices'][0]['message']['content']
         title = ''.join(c for c in assistant_msg if c.isalnum())
-
         filename = "Logs/" + title + " - " + timestamp + ".json"
         print("\nLog saved to "+filename)
         file = open(filename,"w")
         file.write(json.dumps(dialog))
-        file.close()
-       
+        file.close()   
         break
     elif isRoll(user_msg):		
         # Get the number of dice and the die size
@@ -121,7 +142,7 @@ while chat_active:
     )
     
     # Capture the AI's response
-    assistant_msg = completion['choices'][0]['message']['content']
+    assistant_msg = GetContent(completion)
 
     # Append the user input to the ongoing dialog
     dialog.append({"role": "assistant", "content": assistant_msg})
