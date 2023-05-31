@@ -103,7 +103,7 @@ else:
 
 print("\nCompleted file name generation.\n")
 
-timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 title = ''.join(c for c in assistant_msg if c.isalnum())
 premise_filename = "Structure_" + title + "_" + timestamp + ".txt"
 print("\nPremise file saved to " + premise_filename)
