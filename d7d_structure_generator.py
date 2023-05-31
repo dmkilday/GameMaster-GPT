@@ -3,6 +3,7 @@ import openai
 from datetime import datetime
 import json
 import oauth_secret
+import chat
 import re
 
 # Retrieves the content from OpenAI API response
@@ -72,13 +73,18 @@ print("Theme Keywords: " + keywords)
 print("# of Chapters: " + str(stages))
 print("# of Quests per Chapter: " + str(substage_min) + " - " + str(substage_max) + "...\n")
 
-completion = openai.ChatCompletion.create(
+
+completion = chat.safe_chat_completion(
     model="gpt-3.5-turbo", 
     max_tokens=2300, 
     messages=adventure_dialog,
     temperature=1
 )
-adventure_premise = get_content(completion)
+
+if completion == -1:
+    adventure_premise = "Introduction:\n\nA chat bot was unable to create an adventure outline because of some error.."
+else:
+    adventure_premise = get_content(completion)
 
 # Show the user the adventure premise
 print("\n" + adventure_premise + "\n")
@@ -89,7 +95,7 @@ print("\nGenerating file name for adventure premise file...\n")
 messages = [({"role": "system", "content": "You are a helpful AI assitant."})]
 messages.append({"role":"user", "content": "Generate an 8-15 character alphanumeric title for this adventure to be used in a filename. Only respond with the actual title (e.g. don't respond with the word 'Title:' before the actual title). Adventure Premise: " + adventure_premise})
 
-completion = openai.ChatCompletion.create(
+completion = chat.safe_chat_completion(
     model="gpt-3.5-turbo",
     messages=messages,
     max_tokens=10,
@@ -105,7 +111,7 @@ print("\nCompleted file name generation.\n")
 
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 title = ''.join(c for c in assistant_msg if c.isalnum())
-premise_filename = "Structure_" + title + "_" + timestamp + ".txt"
+premise_filename = "Structure_" + timestamp + "_" + title + ".txt"
 print("\nPremise file saved to " + premise_filename)
 file = open("Data/" + premise_filename,"w")
 file.write(adventure_premise)
@@ -137,7 +143,7 @@ messages.append({"role": "user" , "content":"Here is the actual premise input fo
 print("\nCalling OpenAI API...\n")
 
 # Call the API to generate the JSON
-response = openai.ChatCompletion.create(
+response = chat.safe_chat_completion(
             model="gpt-3.5-turbo",
             max_tokens=1700,
             messages=messages,
