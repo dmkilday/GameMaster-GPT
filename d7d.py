@@ -227,7 +227,7 @@ while True:
                         os.mkdir(log_dir)
                         
                     title = ''.join(c for c in assistant_msg if c.isalnum())
-                    log_file_name = timestamp + " - " + title + ".json"
+                    log_file_name = timestamp + "_" + title + ".json"
                 
                 print("\nDM: Saving log to "+log_file_name)
                 file = open(log_dir + "/" + log_file_name,"w")
