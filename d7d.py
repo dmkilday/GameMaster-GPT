@@ -40,7 +40,7 @@ while True:
         main_menu = input(
             "1. Start an adventure\n" +
             "2. Play a previous session\n" +
-            "3. Adventure Generator (for dmkilday to hook into hopefully)\n" +
+            "3. Adventure Generator\n" +
             "4. General Chat\n" +
             "> "
         )
@@ -52,8 +52,8 @@ while True:
         
         
     if i_main == 3:       
-        # Adventure node tracking and stuff goes here. And stuff.
-        # Nothing to see here.
+        with open("d7d_structure_generator.py") as f:
+            exec(f.read())
         continue
     elif i_main == 2:
         # Read from previous logfile and attempt to continue the adventure from where it left off.
