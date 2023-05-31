@@ -34,13 +34,25 @@ def get_content(apiresponse):
         content = apiresponse['choices'][0]['message']['content']
     return content
     
-def safe_chat_completion(model, messages):
+def safe_chat_completion(model, messages, max_tokens=-1, temperature=1):
     if messages == "error_test":
         utils.color_print(f"{Fore.RED}Test Error{Style.RESET_ALL}: We're not sending anything to OpenAI. This should be red!")
         return -1
     else:
         try:
-            response = openai.ChatCompletion.create(model=model,messages=messages)
+            if max_tokens == -1:
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=messages,
+                    temperature=temperature
+                )
+            else:
+                response = openai.ChatCompletion.create(
+                    model=model,
+                    messages=messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens
+                )
         except openai.error.APIError as e:
             utils.color_print(f"{Fore.RED}OpenAI API returned an API Error{Style.RESET_ALL}: {e}")
             return -1

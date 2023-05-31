@@ -1,6 +1,8 @@
 # Project-specific ignores
 Logs/
 oauth_secret.py
+Data/Structure_*.json
+Data/Structure_*.txt
 *.json.bak
 *.py.bak
 
