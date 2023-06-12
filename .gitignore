@@ -1,9 +1,8 @@
 # Project-specific ignores
-log/*
-data/adventure/*
+log/*.log
+data/adventure/*.txt
+data/adventure/*.json
 oauth_secret.py
-Data/Structure_*.json
-Data/Structure_*.txt
 *.json.bak
 *.py.bak
 
