@@ -1,0 +1,28 @@
+{
+    "Introduction": "Elara Windrider, a wizard of great renown, is tasked with a unique commission by King Richard's daughter, Princess Charlotte. She has been kidnapped and is being held for ransom by a madam who is trying to start her own kingdom. When Charlotte was kidnapped, she was disguised as a halfling lady of the night seeking to gather intelligence about the brothel where she was being held.",
+    "The Brothel": {
+        "Description": "Elara arrives in the city and must navigate through its underbelly of brothels and gaming halls to locate the establishment where Charlotte is being held.",
+        "Substages": {
+            "1.1 - The Informant": "Elara meets with an informant who knows the whereabouts of the brothel but requires her services in removing a local thug that is running protection for the brothel.",
+            "1.2 - The Bouncer": "Elara must fight her way through the bouncers to gain entrance into the brothel.",
+            "1.3 - The Seductress": "To gain information about Charlotte's location, Elara must disguise herself as a halfling lady of the night and infiltrate the brothel."
+        }
+    },
+    "The Escape": {
+        "Description": "Elara has located Charlotte, but she must now find a way to escape the brothel undetected. Along the way, they must avoid patrols, solve puzzles, and fight through the brothel's guards.",
+        "Substages": {
+            "2.1 - The Chase": "Charlotte and Elara are pursued by the brothel's guards and must outrun them.",
+            "2.2 - The Stealth Mission": "Charlotte and Elara must use their stealth and wizardry to avoid detection while navigating through the brothel's back rooms.",
+            "2.3 - The Secret Passage": "Elara finds a secret passage that leads them into the city's underground catacombs, but it's guarded by a powerful sorcerer."
+        }
+    },
+    "The Showdown": {
+        "Description": "Elara and Charlotte have escaped the brothel, but they must now face the madam, who is pursuing them with a group of powerful sorcerers and assassins. Elara will have to use her magic lute dagger to defeat the madam and rescue Charlotte before the final showdown.",
+        "Substages": {
+            "3.1 - The Wilderness Escape": "Charlotte and Elara must make their way through the city's wilderness to avoid their pursuers.",
+            "3.2 - The Ambush": "The madam's henchmen lay an ambush for the party in an attempt to recapture Charlotte.",
+            "3.3 - The Battle": "Elara and Charlotte confront the madam in one final, epic battle. Elara must use her lute dagger to cast powerful spells while Charlotte provides backup with her archery."
+        }
+    },
+    "Conclusion": "Elara saves the Princess Charlotte from the madam's grasp and restores her to her father, King Richard. In gratefulness for Elara's bravery and heroic efforts, he rewards her with wealth and promises to provide assistance whenever she needs it in the future."
+}

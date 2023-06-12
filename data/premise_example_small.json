@@ -1,0 +1,27 @@
+{
+    "Introduction": "Tumbleweed Riddlefoot has been specially summoned by King Thrain of the dwarves to help investigate a strange affliction that's infecting their people. Reports state that the dwarves have been experiencing a strange fever that is causing them to become aggressive and dragon-like. Upon arrival, Tumbleweed is taken to the King who explains that the source of the affliction is thought to be coming from the dwarves' inner sanctum, deep within the mountains. Tumbleweed is tasked with finding and stopping the source of this virus before it spreads to other nearby clans.",
+    "The Source": {
+        "Description": "Tumbleweed must investigate the inner sanctum to locate the source of the virus. There are rumors of hidden entrances and obstructed passages within the mountain. Tumbleweed will need to use his skills and spellcasting abilities to navigate through obstacles and battle any dangerous creatures he encounters.",
+        "Substages": {
+            "1.1 - The Entrance": "Tumbleweed discovers a hidden entrance to the mountain and must use his abilities to gain access.",
+            "1.2 - The Corruption": "Tumbleweed encounters infected dwarves, and must find out what they have been doing to become sick.",
+            "1.3 - The Puzzle Room": "Tumbleweed solves a complex puzzle that will lead him deeper into the inner sanctum.",
+             "1.4 - The Vault": "Tumbleweed battles the dragon guardian of the vault, which holds the source of the virus."
+       }
+    },
+    "The Hunt": {
+        "Description": "Tumbleweed must journey to the spring mountain range to find the plant required to cleanse the artifact. Along the way, he must battle the creatures of the mountain and navigate through various obstacles.", 
+        "Substages": {
+            "2.1 - The Frozen Summit": "Tumbleweed battles the harsh conditions of the mountain and searches for the plant in the frigid temperatures.",
+            "2.2 - The Aerial Assault": "Tumbleweed must fend off a pack of wyverns that have taken an interest in the party."
+        }
+    },
+    "The Aftermath": {
+        "Description": "After the dust settles, Tumbleweed meets with the King to discuss what happened and help restore the city." , 
+        "Substages": {
+            "3.1 - The Consequence": "The King and Tumbleweed discuss the events that led up to the infection and what the future might hold.",
+            "3.2 - The Rebuilding": "Tumbleweed helps to rebuild the city, using his bardic abilities to raise the spirits of the people and keep everyone motivated.",
+            "3.3 - The Farewell": "Tumbleweed is thanked for his help and says his farewells to the King and dwarves."
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "Introduction": "Our adventurers are summoned to the city of Azura by the mysterious Wizard of the North, Xanathar. Upon arrival, they discover the wizard's golem, H-43, has gone rogue and stolen a powerful artifact from Xanathar's collection. Xanathar tasks the party with retrieving the artifact before H-43 can unleash its power.",
+    "The Hunt Begins": {
+        "Description": "The party must track down H-43 to retrieve the artifact. They must gather information from the locals, investigate potential locations, and follow leads that will lead them closer to the golem.",
+        "Substages": {
+            "1.1 - The Meeting": "The party meets with Xanathar's informant and learns that H-43 was last seen heading towards the forest of Fallowmere."
+        }
+    }
+}

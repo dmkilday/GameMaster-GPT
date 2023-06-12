@@ -1,0 +1,45 @@
+Character Name: Elara Windrider
+Race: Elf
+Class: Wizard
+Level: 12
+Background: Sage
+Alignment: Neutral Good
+
+Ability Scores (not including any magic item modifiers):
+Strength (STR): 10
+Dexterity (DEX): 16
+Constitution (CON): 12
+Intelligence (INT): 18
+Wisdom (WIS): 14
+Charisma (CHA): 10
+Proficiency Bonus: +4
+Armor Class (AC): 12 + Dexterity modifier
+Hit Points (HP): 76 (12d6 + Constitution modifier)
+Speed: 30ft
+Saving Throws: Intelligence, Wisdom
+Skills: Arcana, History, Investigation, Perception
+Tools: None
+Languages: Common, Elvish
+
+Racial Traits:
+Darkvision: You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light.
+Keen Senses: You have proficiency in the Perception skill.
+Fey Ancestry: You have advantage on saving throws against being charmed and can't be put to sleep by magic.
+Trance: Elves don't need to sleep. Instead, they meditate deeply, remaining semiconscious, for 4 hours a day.
+
+Class Features:
+Arcane Recovery: Once per day when you finish a short rest, you can choose to recover expended spell slots of a combined level that is equal to or less than half your wizard level (rounded up).
+School of Magic: Evocation
+Arcane Tradition Feature: Sculpt Spells
+Ability Score Improvement: You have gained additional ability score improvements at 4th, 8th, and 12th level.
+
+Spells:
+Cantrips: Mage Hand, Prestidigitation, Ray of Frost, Shocking Grasp
+1st Level: Magic Missile, Shield, Feather Fall, Identify
+2nd Level: Misty Step, Mirror Image, Web
+3rd Level: Fireball, Counterspell, Lightning Bolt
+4th Level: Dimension Door, Ice Storm, Wall of Fire
+5th Level: Cone of Cold, Bigby's Hand
+6th Level: Chain Lightning
+
+Equipment: Spellbook, Component Pouch, Explorer's Pack, Quarterstaff, Dagger, Scholar's Robes, Ink and Quill

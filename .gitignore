@@ -1,5 +1,6 @@
 # Project-specific ignores
 Logs/
+data/adventure/
 oauth_secret.py
 Data/Structure_*.json
 Data/Structure_*.txt

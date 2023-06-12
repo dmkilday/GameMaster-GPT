@@ -1,0 +1,56 @@
+{
+    "Description": "The party meets with Xanathar's informant and learns that H-43 was last seen heading towards the forest of Fallowmere.",
+    "Setting": "The city of Azura, a bustling metropolis filled with magic and wonder.",
+    "Objective": "Track down H-43 and retrieve the stolen artifact.",
+    "Reward": {
+        "Gold": null,
+        "Items": [],
+        "Favors": [],
+        "Information": [
+            "Information about H-43's last known location."
+        ]
+    },
+    "NPCs": [
+        {
+            "Name": "Kethril Shadowblade",
+            "Race": "Elf",
+            "Class": "Ranger",
+            "Stats": {
+                "Charisma": 12,
+                "Wisdom": 18,
+                "Intelligence": 14
+            },
+            "Items": [
+                "Longbow",
+                "Quiver of arrows",
+                "Dagger"
+            ],
+            "Skills/Abilities": [
+                "Expert tracker",
+                "Skilled archer"
+            ],
+            "Backstory": "Kethril is a skilled ranger who has spent his life tracking down dangerous creatures in the wild. He is a loner by nature, but has agreed to help the party in their quest.",
+            "Quest Related Information": "Kethril has heard rumors of a hidden cave in the forest of Fallowmere that may be H-43's current location."
+        },
+        {
+            "Name": "Xanathar's Informant",
+            "Race": "Human",
+            "Class": "Rogue",
+            "Stats": {
+                "Charisma": 16,
+                "Wisdom": 12,
+                "Intelligence": 14
+            },
+            "Items": [
+                "Lockpicks",
+                "Dagger"
+            ],
+            "Skills/Abilities": [
+                "Expert thief",
+                "Skilled negotiator"
+            ],
+            "Backstory": "The informant is a member of Xanathar's network of spies and informants. They have agreed to help the party in exchange for a favor from Xanathar.",
+            "Quest Related Information": "The informant has heard rumors that H-43 may be working with a group of bandits in the forest of Fallowmere."
+        }
+    ]
+}

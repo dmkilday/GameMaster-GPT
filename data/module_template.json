@@ -1,0 +1,32 @@
+{
+    "Introduction": "",
+    "Sections": [
+    {   
+        "SectionID": "",
+        "Title": "",
+        "Description": "",
+        "Setting": "",
+        "Objective": "",
+        "Reward": [
+        {
+            "Currency": [{"": }],
+            "Items": [{"": ""}],
+            "Favors": [{"": ""}],
+            "Information": [{"": ""}]
+        }],
+        "NPCs": [
+        {
+            "Name": "",
+            "Race": "",
+            "Class": "",
+            "Stats": [
+            {
+                "Strength": ,
+                "Charisma": ,
+                "Wisdom": ,
+                "Intelligence": 
+            }]
+        }]
+    }]
+}
+

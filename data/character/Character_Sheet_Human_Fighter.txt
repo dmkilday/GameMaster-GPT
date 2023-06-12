@@ -1,0 +1,38 @@
+Character Name: Ironhand Stormbreaker
+Race: Human
+Class: Fighter
+Level: 16
+Background: Soldier
+Alignment: Lawful Good
+
+Ability Scores (not including any magic item modifiers):
+Strength (STR): 20
+Dexterity (DEX): 14
+Constitution (CON): 18
+Intelligence (INT): 12
+Wisdom (WIS): 14
+Charisma (CHA): 10
+Proficiency Bonus: +5
+Armor Class (AC): 18 (Plate armor)
+Hit Points (HP): 152 (10 + 15d10 + 48 for Constitution modifier)
+Speed: 30ft
+Saving Throws: Strength, Constitution
+Skills: Athletics, Intimidation, Perception, Survival
+Tools: Dice set, Vehicles (land)
+Languages: Common, Orc, Elvish
+
+Racial Traits:
+Ability Score Increase: Ironhand's ability scores each increase by 1.
+Extra Language: Ironhand can speak, read, and write one extra language of your choice.
+
+Class Features:
+Fighting Style (Great Weapon Fighting): When Ironhand rolls a 1 or 2 on a damage die for an attack he makes with a melee weapon that he is wielding with two hands, he can reroll the die and must use the new roll.
+Second Wind: Ironhand has a limited well of stamina that he can draw on to protect himself from harm.
+Action Surge: On his turn, Ironhand can take one additional action.
+Indomitable: Ironhand can reroll a saving throw that he fails.
+Extra Attack (3): Ironhand can attack three times, instead of once, whenever he takes the Attack action on his turn.
+Martial Archetype (Champion): Ironhand's martial training allows him to perform remarkable feats of combat capability and endurance.
+
+Spells: Fighters do not have spellcasting abilities, so this is not applicable for Ironhand.
+
+Equipment: Plate armor, Greatsword, Longbow with 20 arrows, a set of dice, an insignia of rank, a trophy taken from a fallen enemy (a dagger, broken blade, or piece of a banner), a set of bone dice or deck of cards, a set of common clothes, a belt pouch containing 10 gp.

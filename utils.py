@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+from datetime import datetime
 strip_colors = True
 
 def has_colors():
@@ -52,3 +53,22 @@ def color_print(source):
     if not has_colors():
         source = re.sub(r'\033\[(\d|;)+?m', '', source)
     print(source)
+
+def read_file(file_path):
+    with open(file_path, 'r') as file:
+        file_contents = file.read()
+    
+    return file_contents
+
+def get_duration(start_datetime, end_datetime):
+    duration = end_datetime - start_datetime
+    seconds = duration.total_seconds()
+    return seconds
+
+def write_file(file_name, data):
+    file = open(get_file_path(file_name),"w")
+    file.write(data)
+    file.close()
+
+def get_file_path(file_name):
+    return "data/" + file_name
