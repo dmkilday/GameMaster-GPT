@@ -1,5 +1,4 @@
 # Local libs
-import oauth_secret
 import utils
 import messages
 
@@ -25,8 +24,8 @@ FAST_LLM_MODEL = os.getenv('FAST_LLM_MODEL')
 SMART_LLM_MODEL = os.getenv('SMART_LLM_MODEL')
 CREATIVE_TEMPERATURE = int(os.getenv('CREATIVE_TEMPERATURE'))
 DETERMINISTIC_TEMPERATURE = int(os.getenv('DETERMINISTIC_TEMPERATURE'))
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
-openai.api_key = oauth_secret.secret_key
 os.system('color')
 show_tok = True
 active = True

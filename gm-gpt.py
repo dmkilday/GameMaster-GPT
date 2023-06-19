@@ -1,5 +1,4 @@
 # Local libs
-import oauth_secret
 import messages
 import utils
 import chat
