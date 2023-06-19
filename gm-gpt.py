@@ -54,6 +54,8 @@ def generate_adventure():
 
 # Initiates re-entry into a saved adventure
 def start_saved_adventure():
+    global dialog
+    
     # Read from previous logfile and attempt to continue the adventure from where it left off.
     if os.path.exists(log_dir + "/") == False:
         os.mkdir(log_dir)
@@ -145,7 +147,8 @@ def start_chat():
 def start_new_adventure():
     global dialog
     global ooc_dialog
-
+    global log_file_name
+    
     full_text_log = ""
     if prev_session == False:
         #Import character sheet
