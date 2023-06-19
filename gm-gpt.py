@@ -10,12 +10,20 @@ import random
 from datetime import datetime
 import json
 import glob
+from dotenv import load_dotenv
 
 # PyPI libs
 import re
 import openai
 from colorama import Fore
 from colorama import Style
+
+# Load environment variables
+load_dotenv()
+FAST_LLM_MODEL = os.getenv('FAST_LLM_MODEL')
+SMART_LLM_MODEL = os.getenv('SMART_LLM_MODEL')
+DETERMINISTIC_TEMPURATURE = os.getenv('DETERMINISTIC_TEMPURATURE')
+CREATIVE_TEMPERATURE = os.getenv('CREATIVE_TEMPERATURE')
 
 os.system('color')
 
@@ -46,6 +54,8 @@ def generate_adventure():
 
 # Initiates re-entry into a saved adventure
 def start_saved_adventure():
+    global dialog
+    
     # Read from previous logfile and attempt to continue the adventure from where it left off.
     if os.path.exists(log_dir + "/") == False:
         os.mkdir(log_dir)
@@ -116,7 +126,7 @@ def start_chat():
                 
                 
             completion = chat.safe_chat_completion(
-                model="gpt-3.5-turbo",
+                model=FAST_LLM_MODEL,
                 messages = dialog
             )
             if completion == -1:
@@ -137,7 +147,8 @@ def start_chat():
 def start_new_adventure():
     global dialog
     global ooc_dialog
-
+    global log_file_name
+    
     full_text_log = ""
     if prev_session == False:
         #Import character sheet
@@ -181,6 +192,7 @@ def start_new_adventure():
         
         
     # Enter dialog loop
+    dialog_token_limit = 2000 # This is the max we will allow the dialog to grow before summarizing
     while chat.active:
 
         # Prompt user for there response
@@ -189,7 +201,7 @@ def start_new_adventure():
         # If they didn't enter anything for a premise, then generate one for them.
         if (user_msg == "" and adventure_started == False):
             completion = chat.safe_chat_completion(
-                model="gpt-3.5-turbo",  
+                model=FAST_LLM_MODEL,  
                 messages = adventure_dialog
             )
             adventure_premise = chat.get_content(completion)
@@ -214,7 +226,7 @@ def start_new_adventure():
                 
                 # Exit with generated title        
                 completion = chat.safe_chat_completion(
-                    model="gpt-3.5-turbo",
+                    model=FAST_LLM_MODEL,
                     messages = dialog
                 )
 
@@ -248,7 +260,7 @@ def start_new_adventure():
                 print(f"\nGM: Go to {image_url} to see what I think the current scene looks like.")               
         elif user_msg == "error_test":
             completion = chat.safe_chat_completion(
-                model="gpt-3.5-turbo",
+                model=FAST_LLM_MODEL,
                 messages = "error_test"
             )
             continue
@@ -259,7 +271,7 @@ def start_new_adventure():
             print(user_msg)
             ooc_dialog.append({"role":"user", "content":str(ooc_table[2])})
             completion = chat.safe_chat_completion(
-                model="gpt-3.5-turbo",
+                model=FAST_LLM_MODEL,
                 messages = ooc_dialog
             )
             if completion == -1:
@@ -303,9 +315,16 @@ def start_new_adventure():
         dialog.append({"role": "user", "content": user_msg + " " + messages.reminder})
         full_text_log += "Player: " + user_msg + "\n\n"
 
+        #TODO: Summarize beginning of log as we approach context window limit
+        # Identify dialog token size
+        #token_size = chat.get_token_size_messages(dialog, FAST_LLM_MODEL)
+        # Summarize old dialog if we've reached the limit 
+        #if (token_size > dialog_token_limit):
+        #    chat.shrink_dialog(dialog, token_size, 1000, FAST_LLM_MODEL) # Shrink dialog to under 1,000 tokens
+
         # Query chatbot
         completion = chat.safe_chat_completion(
-            model="gpt-3.5-turbo",
+            model=FAST_LLM_MODEL,
             messages = dialog
         )
         if completion == -1:
