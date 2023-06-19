@@ -55,6 +55,7 @@ def generate_adventure():
 def start_saved_adventure():
     global log_file_name
     global dialog
+
     # Read from previous logfile and attempt to continue the adventure from where it left off.
     if os.path.exists(log_dir + "/") == False:
         os.mkdir(log_dir)
