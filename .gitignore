@@ -1,5 +1,6 @@
 # Project-specific ignores
 log/*.log
+log/*.json
 data/adventure/*.txt
 data/adventure/*.json
 oauth_secret.py
