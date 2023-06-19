@@ -1,6 +1,7 @@
 import sys
 import os
 import openai
+from dotenv import load_dotenv
 from datetime import datetime
 import json
 import re
@@ -8,6 +9,11 @@ import chat
 import utils
 import copy
 import traceback
+
+# Load environment variables
+load_dotenv()
+FAST_LLM_MODEL = os.getenv('FAST_LLM_MODEL')
+SMART_LLM_MODEL = os.getenv('SMART_LLM_MODEL')
 
 character_dir = "character/"
 adventure_dir = "adventure/"
@@ -54,7 +60,7 @@ def get_premise_text(themes, stages, substage_min, substage_max, dialog):
     print("# of Quests per Chapter: " + str(substage_min) + " - " + str(substage_max) + "...\n")
 
     completion = chat.safe_chat_completion(
-        model="gpt-3.5-turbo", 
+        model=SMART_LLM_MODEL, 
         max_tokens=2300, 
         messages=adventure_dialog,
         temperature=1
@@ -346,7 +352,7 @@ def main():
         print(f"File name: {filename}")
         print(f"Line number: {line_number}")
         
-        Print out error trace
+        # Print out error trace
         print("Trace: \n")
         traceback.print_exc() # Print trace
 

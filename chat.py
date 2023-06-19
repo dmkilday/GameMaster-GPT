@@ -10,16 +10,142 @@ from datetime import datetime
 import json
 import random
 import glob
+import tiktoken
+from dotenv import load_dotenv
+
 
 # PyPI libs
 import re
 from colorama import Fore
 from colorama import Style
 
+# Load environment variables
+load_dotenv()
+FAST_LLM_MODEL = os.getenv('FAST_LLM_MODEL')
+SMART_LLM_MODEL = os.getenv('SMART_LLM_MODEL')
+CREATIVE_TEMPERATURE = int(os.getenv('CREATIVE_TEMPERATURE'))
+DETERMINISTIC_TEMPERATURE = int(os.getenv('DETERMINISTIC_TEMPERATURE'))
+
 openai.api_key = oauth_secret.secret_key
 os.system('color')
 show_tok = True
 active = True
+
+# Shrink's dialog by x number of 
+def shrink_dialog(dialog, dialog_size, token_limit, model_name):
+    # Check if the chat dialog is already within the token limit
+    if dialog_size <= token_limit:
+        return chat_dialog
+
+    summary_token_size = 200 # limit summary to 200 tokens
+
+    # Identify chat messages that must be consolidated to meet the specified token limit
+    
+    # Identify average token size of messages
+    avg_msg_size = dialog_size / len(dialog) 
+
+    # Determine how many messages need to be consolidated to meet token limit
+    # Algebra: 
+    # 200 - x*avg_msg_size + (len(dialog)-x)*avg_msg_size = 1000
+    # -2x(avg_msg_size) + 200 + len(dialog)*avg_msg_size = 1000
+    # x = ((len(dialog)*avg_msg_size) - 800) / (2 * avg_msg_size)
+    consolidation_count = ((len(dialog) * avg_msg_size) + summary_token_size - token_limit) / (2 * avg_msg_size)
+
+    # Grab the number of messages to consolidate and summarize their text
+    item_count = 0
+    temp_dialog = []
+    dialog_text = ""
+
+    # Loop through the dialog items
+    for record in dialog.values():
+        item_count += 1
+        temp_dialog.append(record)
+        dialog_prefix = ""
+        
+        # Determine if the message is GM or Player
+        if (record[0].value() == "assistant"):
+            prefix = "\nGM: "
+        else:
+            prefix = "\nPlayer: "
+        
+        # Append the item to dialog text
+        dialog_text += prefix + record[1].value() + "\n"
+
+        # Brek out of loop once we;ve reach the number of items to summarize
+        if (item_count == consolidation_count):
+            break
+
+    # Create a new summarized message
+    instructions = "Summarize this dialog between the GM and the player, telling a story of what happened as if it happened in the past."
+    summary_text = get_summary(dialog, instructions, summary_token_size)
+
+    print(f"\nSummary Text: {summary_text}")
+
+    # TODO: Replace summarized messages with the summary message
+
+#    # Start grouping and summarizing from the oldest message
+#    new_dialog = []
+#    temp_group = []
+#    temp_group_content = ''
+#    for msg in chat_dialog:
+#        temp_group.append(msg)
+#        temp_group_content += ' ' + msg['content']
+#
+#        if count_tokens(temp_group_content, model_name) > token_limit:
+#            # If adding a new message exceeds the limit, 
+#            # summarize the group without the last message and start a new group
+#            summarized_content = summarize_text(temp_group_content[:-len(msg['content'])], token_limit)
+#            new_dialog.append({'id': temp_group[0]['id'], 'role': 'system', 'content': summarized_content})
+#            
+#            temp_group = [msg]  # start new group with the last message
+#            temp_group_content = msg['content']
+#
+#    # Don't forget to process the last group
+#    if temp_group:
+#        summarized_content = summarize_text(temp_group_content, token_limit)
+#        new_dialog.append({'id': temp_group[0]['id'], 'role': 'system', 'content': summarized_content})
+#
+    return new_dialog
+
+
+# Returns the number of tokens in a chat dialog.
+def get_token_size_messages(messages, model="gpt-3.5-turbo"):
+    """Returns the number of tokens used by a list of messages."""
+    try:
+        encoding = tiktoken.encoding_for_model(model)
+    except KeyError:
+        print("Warning: model not found. Using cl100k_base encoding.")
+        encoding = tiktoken.get_encoding("cl100k_base")
+    if model == "gpt-3.5-turbo":
+        print("Warning: gpt-3.5-turbo may change over time. Returning num tokens assuming gpt-3.5-turbo-0301.")
+        return get_token_size_messages(messages, model="gpt-3.5-turbo-0301")
+    elif model == "gpt-4":
+        print("Warning: gpt-4 may change over time. Returning num tokens assuming gpt-4-0314.")
+        return get_token_size_messages(messages, model="gpt-4-0314")
+    elif model == "gpt-3.5-turbo-0301":
+        tokens_per_message = 4  # every message follows <|start|>{role/name}\n{content}<|end|>\n
+        tokens_per_name = -1  # if there's a name, the role is omitted
+    elif model == "gpt-4-0314":
+        tokens_per_message = 3
+        tokens_per_name = 1
+    else:
+        raise NotImplementedError(f"""num_tokens_from_messages() is not implemented for model {model}. See https://github.com/openai/openai-python/blob/main/chatml.md for information on how messages are converted to tokens.""")
+    num_tokens = 0
+    for message in messages:
+        num_tokens += tokens_per_message
+        for key, value in message.items():
+            num_tokens += len(encoding.encode(value))
+            if key == "name":
+                num_tokens += tokens_per_name
+    num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>
+    return num_tokens
+
+
+def get_token_size_string(string: str, model_name: str) -> int:
+    encoding = tiktoken.encoding_for_model(model_name)
+    num_tokens = len(encoding.encode(string))
+    return num_tokens
+
 
 # Appends messages to dialog array
 def append_dialog(dialog, role, content):
@@ -30,6 +156,7 @@ def append_dialog(dialog, role, content):
     
     # Append the requested message
     dialog.append({"role": role, "content": content})
+
 
 # Retrieves the content from OpenAI API response
 def get_content(apiresponse):
@@ -103,21 +230,21 @@ def transform_data(example_source, example_target, source, special_instructions,
 
     # Call the API to perform the transformation
     response = safe_chat_completion(
-                model="gpt-3.5-turbo",
+                model=FAST_LLM_MODEL,
                 max_tokens=max_tokens,
                 messages=messages,
-                temperature=0
+                temperature=DETERMINISTIC_TEMPERATURE
                 )
 
     # Return the tranformed data
     return get_content(response)
 
 # Generates a summary for a text string within a given number of words.
-def gen_summary(text, special_instructions, max_words):
+def gen_summary(text, special_instructions, max_tokens):
 
     # Set up prompt
     messages = []
-    append_dialog(messages, "user", f"I am going to give you a string of text and I want you to return a summary paragraph in {max_words} words or less. Return no other information.")
+    append_dialog(messages, "user", f"I am going to give you a string of text and I want you to return a summary paragraph. Return no other information.")
     append_dialog(messages, "user", f"Special Instructions: {special_instructions}")
     append_dialog(messages, "user", f"Here is the text to be summarized: \"\"\"{text}\"\"\"")
 
@@ -126,9 +253,9 @@ def gen_summary(text, special_instructions, max_words):
 
     # Call the chat bot
     completion = safe_chat_completion(
-        model="gpt-3.5-turbo",
+        model=FAST_LLM_MODEL,
         messages=messages,
-        max_tokens=1000,
+        max_tokens=max_tokens,
         temperature=1
     )
     
@@ -151,7 +278,7 @@ def gen_title(text):
 
     # Call the chat bot
     completion = safe_chat_completion(
-        model="gpt-3.5-turbo",
+        model=FAST_LLM_MODEL,
         messages=messages,
         max_tokens=10,
         temperature=0
