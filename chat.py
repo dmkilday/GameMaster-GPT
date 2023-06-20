@@ -1,4 +1,3 @@
-# Add a little somethin' somethin' to work in a GPG key.
 # Local libs
 import utils
 import messages
