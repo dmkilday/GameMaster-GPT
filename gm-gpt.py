@@ -3,6 +3,7 @@ import oauth_secret
 import messages
 import utils
 import chat
+import ai_functions
 
 # Built-in libs
 import os
@@ -42,6 +43,55 @@ dialog = [{"role": "system", "content" : messages.initialize}]
 
 # Initialize the out of character dialog
 ooc_dialog = [{"role": "system", "content" : messages.initialize}]
+
+# Requests response frm GM
+def invoke_gm(gm_player_dialog, user_msg, full_text_log):
+  
+    # Add player message to ongoing dialog and text log
+    chat.append_dialog(gm_player_dialog, "user", user_msg)
+    full_text_log += "Player: " + user_msg + "\n\n"
+
+    # Call chat completion API
+    completion = chat.safe_chat_completion(
+        model=FAST_LLM_MODEL,
+        messages=dialog,
+        function_call="auto"
+    )
+    
+    # TODO: Implement error handline
+    #if completion == -1:
+    #    continue
+    
+    # Add GM response to dialog and text log if not a function
+    if not chat.is_function_call(completion):
+        assistant_msg = chat.get_content(completion)
+        chat.append_dialog(gm_player_dialog, "assistant", assistant_msg)
+        full_text_log += "GM: " + assistant_msg + "\n\n"
+
+    return completion
+
+
+# Rolls the dice for a player
+def roll_dice(die_count, die_size):
+    
+    # Build the Dice role string
+    rollString = "I rolled " + str(die_count) + " d" + str(die_size) + " for "
+    die_total = 0
+    for i in range(1, die_count+1):
+        die_value = random.randrange(1, die_size)
+        die_total += die_value # Add to the die total
+        if i == 1:
+            rollString += "a " + str(die_value)
+        elif i == die_count:
+            rollString += ", and a " + str(die_value) + " for a total of " + str(die_total) + "." 
+        else:
+            rollString += ", a " + str(die_value)
+
+    #print("\nPlayer: " + rollString)
+    
+    # Set the user message to the roll results
+    return rollString
+
 
 # Initiates the adventure generator
 # TODO: This function is no currently working
@@ -180,6 +230,8 @@ def start_new_adventure():
                            ]
 
         adventure_started = False
+
+        
     else:
         print("GM: " + dialog[-1]['content'] + "\n\n")
         adventure_started = True
@@ -191,31 +243,41 @@ def start_new_adventure():
                 full_text_log += "Player: " + history["content"] + "\n\n"
         
         
-    # Enter dialog loop
+    # Enter game dialog loop
     dialog_token_limit = 2000 # This is the max we will allow the dialog to grow before summarizing
     while chat.active:
 
         # Prompt user for there response
         user_msg = input("Player: ")
 
-        # If they didn't enter anything for a premise, then generate one for them.
-        if (user_msg == "" and adventure_started == False):
-            completion = chat.safe_chat_completion(
-                model=FAST_LLM_MODEL,  
-                messages = adventure_dialog
-            )
-            adventure_premise = chat.get_content(completion)
-            dialog.append({"role":"user", "content": adventure_premise})
-            
-            # Show welcome message and adventure premise.
-            utils.color_print(messages.welcome + adventure_premise)
-        
-        adventure_started = True
+        # If the adventure hasn't started yet, we need to get the adventure premise
+        if (adventure_started == False):
 
+            # If they didn't enter a premise, let's ask the API to generate one.
+            if (user_msg == ""):
+                completion = chat.safe_chat_completion(
+                    model=FAST_LLM_MODEL,  
+                    messages = adventure_dialog
+                )
+                adventure_premise = chat.get_content(completion)
+              
+                #print(f"\nPremise Response: {completion}\n")
+
+            # Set the premise to whatever the user entered
+            else:
+                
+                adventure_premise = user_msg
+
+            # Show welcome message and adventure premise.
+            dialog.append({"role":"user", "content": adventure_premise}) 
+            utils.color_print(messages.welcome + adventure_premise)
+            adventure_started = True # set the adventure as now started  
+       
         # Check if user wants to exit
-        if user_msg == "exit":
+        elif user_msg == "exit":
             print("\nIt was nice playing with you. Goodbye.\n")
             break
+
         # Check if user wants to log their adventure then exit
         elif user_msg == "log and exit":
             if log_file_name == "":
@@ -246,6 +308,8 @@ def start_new_adventure():
             file.write(json.dumps(dialog))
             file.close()   
             break
+
+        # Check if the user wants to generate a dall-e image
         elif user_msg == "dall-e":
             # Use sparingly! Expensive AND the prompt length max is insanely short.
             if full_text_log == "":
@@ -257,13 +321,17 @@ def start_new_adventure():
                     size="512x512"
                 )
                 image_url = response['data'][0]['url']
-                print(f"\nGM: Go to {image_url} to see what I think the current scene looks like.")               
+                print(f"\nGM: Go to {image_url} to see what I think the current scene looks like.")
+
+        # TODO: Comment this condition (what is error test?)
         elif user_msg == "error_test":
             completion = chat.safe_chat_completion(
                 model=FAST_LLM_MODEL,
                 messages = "error_test"
             )
             continue
+
+        # Check if the user is talking to the GM out of character (OOC)
         elif utils.is_ooc(user_msg):
             ooc_table = re.split(r'ooc(\/clear)?\s+',user_msg)
             if ooc_table == "/clear":
@@ -282,63 +350,54 @@ def start_new_adventure():
             print("\nGM: " + assistant_msg + "\n")
             full_text_log += "GM: " + assistant_msg + "\n\n"
             continue
-        elif utils.is_roll(user_msg):		
-            # Get the number of dice and the die size
-            die = user_msg.split("d")
-            
-            # If there's not a number before the d, assume it's a 1
-            if (die[0]==""):
-                die_count = 1
-            else:
-                die_count = int(die[0])
-            die_size = int(die[1])
-            
-            # Build the Dice role string
-            rollString = "I rolled " + str(die_count) + " d" + str(die_size) + " for "
-            die_total = 0
-            for i in range(1, die_count+1):
-                die_value = random.randrange(1, die_size)
-                die_total += die_value # Add to the die total
-                if i == 1:
-                    rollString += "a " + str(die_value)
-                elif i == die_count:
-                    rollString += ", and a " + str(die_value) + " for a total of " + str(die_total) + "." 
-                else:
-                    rollString += ", a " + str(die_value)
+        
+        # There are no system commands, so determine what the user wants to do 
+        else:
 
-            print("\nPlayer: " + rollString)
-            
-            # Set the user message to the roll results
-            user_msg = rollString
-            
-        # Append the user input to the ongoing dialog
-        dialog.append({"role": "user", "content": user_msg + " " + messages.reminder})
-        full_text_log += "Player: " + user_msg + "\n\n"
+            #TODO: Summarize beginning of log as we approach context window limit
+            # Identify dialog token size
+            #token_size = chat.get_token_size_messages(dialog, FAST_LLM_MODEL)
+            # Summarize old dialog if we've reached the limit 
+            #if (token_size > dialog_token_limit):
+            #    chat.shrink_dialog(dialog, token_size, 1000, FAST_LLM_MODEL) # Shrink dialog to under 1,000 tokens
 
-        #TODO: Summarize beginning of log as we approach context window limit
-        # Identify dialog token size
-        #token_size = chat.get_token_size_messages(dialog, FAST_LLM_MODEL)
-        # Summarize old dialog if we've reached the limit 
-        #if (token_size > dialog_token_limit):
-        #    chat.shrink_dialog(dialog, token_size, 1000, FAST_LLM_MODEL) # Shrink dialog to under 1,000 tokens
+            # Send message to GM
+            user_message = user_msg + " " + messages.reminder
+            completion = invoke_gm(dialog, user_message, full_text_log)
 
-        # Query chatbot
-        completion = chat.safe_chat_completion(
-            model=FAST_LLM_MODEL,
-            messages = dialog
-        )
-        if completion == -1:
-            continue
+            # If the API response is a function call, execute the function
+            if chat.is_function_call(completion):
                 
-        # Capture the AI's response
-        assistant_msg = chat.get_content(completion)
+                # Get function being called and arguments
+                function = chat.get_function(completion)
+                args = chat.get_function_args(completion)
 
-        # Append the user input to the ongoing dialog
-        dialog.append({"role": "assistant", "content": assistant_msg})
+                # If it's a dice roll
+                if function == "roll_dice":
+                    
+                    die_to_roll = args['side_count']
+                    times_to_roll = args['roll_count']
+                    
+                    print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...\n")
+                    
+                    dice_outcome = roll_dice(times_to_roll, die_to_roll)           
+                    
+                    print(f"\nPlayer: {dice_outcome}\n")
 
-        # Print out chatbot response
-        print("\nGM: " + assistant_msg + "\n")
-        full_text_log += "GM: " + assistant_msg + "\n\n"
+                    completion = invoke_gm(dialog, dice_outcome, full_text_log)
+                    #print(f"\nDice Roll Response: {completion}\n")
+                
+                # TODO: Add additional function calls here.
+                # elif function == "attack":
+                    #etc...
+
+
+            # Capture the GM's response
+            assistant_msg = chat.get_content(completion)
+
+            # Print out chatbot response
+            print("\nGM: " + assistant_msg + "\n")
+
 
 # Continue looping while the play is having dialog with the GM.
 while True:
