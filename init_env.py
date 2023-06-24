@@ -12,7 +12,6 @@ if os.path.isfile("oauth_secret.py"):
     if not os.path.isfile(env_file_path):
         # Create new .env file and populate with defaults from above.
         template = utils.read_file(".env.template")
-        print(template)
         utils.write_file_nd(".env",template)
         print("Copied .env.template to .env for defaults.")
        
