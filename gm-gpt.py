@@ -308,7 +308,7 @@ def start_new_adventure():
             
             print("\nGM: Saving log to "+log_file_name)
             file = open(log_dir + "/" + log_file_name,"w")
-            file.write(json.puts(dialog))
+            file.write(json.dumps(dialog))
             file.close()   
             break
 
