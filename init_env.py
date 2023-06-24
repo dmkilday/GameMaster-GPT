@@ -23,6 +23,9 @@ if os.path.isfile("oauth_secret.py"):
         except:
             print("Did not find OPENAI_API_KEY or DISCORD_TOKEN in .env file.\n\nReading from oauth_secret if they exist,\nor leaving non-working defaults.")
         
+    user_msg = input("We will be migrating oauth_secret.py contents into .env.\n\n"
+        "If you are paranoid about this, make a backup of oauth_secret.py outside the application directory "
+        "or be ready to regenerate another from https://platform.openai.com/account/api-keys")
     
     import oauth_secret
     print("Importing keys from oauth_secret...")
@@ -34,4 +37,3 @@ if os.path.isfile("oauth_secret.py"):
         
     print("Success!")    
     os.remove("oauth_secret.py")
-    exit()
