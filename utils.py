@@ -70,5 +70,10 @@ def write_file(file_name, data):
     file.write(data)
     file.close()
 
+def write_file_nd(file_name, data):
+    file = open(file_name,"w")
+    file.write(data)
+    file.close()
+    
 def get_file_path(file_name):
     return "data/" + file_name

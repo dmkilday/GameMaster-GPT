@@ -1,3 +1,4 @@
+# Must come first!! We can delete this and the file once we're confident nobody is using oauth_secret.py anymore.
 import init_env
 
 # Local libs
