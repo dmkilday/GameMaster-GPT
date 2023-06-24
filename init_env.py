@@ -27,12 +27,23 @@ if os.path.isfile("oauth_secret.py"):
         "or be ready to regenerate another from https://platform.openai.com/account/api-keys")
     
     import oauth_secret
+    
     print("Importing keys from oauth_secret...")
-    if oauth_secret.secret_key != OPENAI_API_KEY:
-        set_key(dotenv_path=env_file_path,key_to_set="OPENAI_API_KEY", value_to_set=oauth_secret.secret_key)
-        
-    if oauth_secret.DISCORD_TOKEN != DISCORD_TOKEN:
-        set_key(dotenv_path=env_file_path,key_to_set="DISCORD_TOKEN", value_to_set=oauth_secret.DISCORD_TOKEN)
-        
-    print("Success!")    
+    try:
+        if oauth_secret.secret_key != OPENAI_API_KEY:
+            set_key(dotenv_path=env_file_path,key_to_set="OPENAI_API_KEY", value_to_set=oauth_secret.secret_key)
+        print("oauth_secret.secret_key successfully imported to .env file.")
+    
+    except:
+        print("oauth_secret.secret_key not found. Unable to import key value to .env file.")
+    
+    try:
+        if oauth_secret.DISCORD_TOKEN != DISCORD_TOKEN:
+            set_key(dotenv_path=env_file_path,key_to_set="DISCORD_TOKEN", value_to_set=oauth_secret.DISCORD_TOKEN)
+        print("oauth_secret.DISCORD_TOKEN successfully imported to .env file.")
+
+    except:     
+        print("oauth_secret.DISCQRD_TOKEN not found. Unable to import key value to .env file.")
+
+    print("oauth_secret key value import complete!")
     os.remove("oauth_secret.py")
