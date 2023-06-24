@@ -1,5 +1,6 @@
+import init_env
+
 # Local libs
-import oauth_secret
 import messages
 import utils
 import chat
@@ -25,6 +26,7 @@ FAST_LLM_MODEL = os.getenv('FAST_LLM_MODEL')
 SMART_LLM_MODEL = os.getenv('SMART_LLM_MODEL')
 DETERMINISTIC_TEMPURATURE = os.getenv('DETERMINISTIC_TEMPURATURE')
 CREATIVE_TEMPERATURE = os.getenv('CREATIVE_TEMPERATURE')
+
 
 os.system('color')
 
@@ -305,7 +307,7 @@ def start_new_adventure():
             
             print("\nGM: Saving log to "+log_file_name)
             file = open(log_dir + "/" + log_file_name,"w")
-            file.write(json.dumps(dialog))
+            file.write(json.puts(dialog))
             file.close()   
             break
 
@@ -397,8 +399,7 @@ def start_new_adventure():
 
             # Print out chatbot response
             print("\nGM: " + assistant_msg + "\n")
-
-
+    
 # Continue looping while the play is having dialog with the GM.
 while True:
 
