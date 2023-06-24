@@ -1,5 +1,4 @@
 # Local libs
-import oauth_secret
 import utils
 import messages
 
@@ -11,13 +10,14 @@ import json
 import random
 import glob
 import tiktoken
+from dotenv import load_dotenv
 
 # PyPI libs
 import re
 from colorama import Fore
 from colorama import Style
 
-openai.api_key = oauth_secret.secret_key
+openai.api_key = os.getenv('OPENAI_API_KEY')
 os.system('color')
 show_tok = True
 active = True
