@@ -1,6 +1,7 @@
 # Local libs
 import utils
 import messages
+import ai_functions
 
 # Built-in libs
 import os
@@ -30,6 +31,27 @@ os.system('color')
 show_tok = True
 active = True
 
+# Determines if the chat completion is returning a function call
+def is_function_call(completion):
+    is_function = False
+    finish_reason = completion.choices[0].finish_reason
+    if finish_reason == "function_call":
+        is_function = True
+    return is_function
+
+# Returns the name of the function being called from the chat completion
+def get_function(completion):
+    reply_content = completion.choices[0].message 
+    function_name = reply_content.to_dict()['function_call']['name']
+    return function_name
+ 
+# Returns a JSON dict of arguments in the chat completion function call
+def get_function_args(completion):
+    reply_content = completion.choices[0].message 
+    arguments = reply_content.to_dict()['function_call']['arguments']
+    args = json.loads(arguments)
+    return args
+   
 # Shrink's dialog by x number of 
 def shrink_dialog(dialog, dialog_size, token_limit, model_name):
     # Check if the chat dialog is already within the token limit
@@ -170,7 +192,7 @@ def get_content(apiresponse):
         content = apiresponse['choices'][0]['message']['content']
     return content
     
-def safe_chat_completion(model, messages, max_tokens=-1, temperature=1):
+def safe_chat_completion(model, messages, max_tokens=-1, temperature=1, function_call="none"):
     if messages == "error_test":
         utils.color_print(f"{Fore.RED}Test Error{Style.RESET_ALL}: We're not sending anything to OpenAI. This should be red!")
         return -1
@@ -179,12 +201,16 @@ def safe_chat_completion(model, messages, max_tokens=-1, temperature=1):
             if max_tokens == -1:
                 response = openai.ChatCompletion.create(
                     model=model,
+                    functions=ai_functions.functions,
+                    function_call=function_call,
                     messages=messages,
                     temperature=temperature
                 )
             else:
                 response = openai.ChatCompletion.create(
                     model=model,
+                    functions=ai_functions.functions,
+                    function_call=function_call,
                     messages=messages,
                     temperature=temperature,
                     max_tokens=max_tokens
