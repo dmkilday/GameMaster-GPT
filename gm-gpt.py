@@ -47,8 +47,8 @@ dialog = [{"role": "system", "content" : messages.initialize}]
 # Initialize the out of character dialog
 ooc_dialog = [{"role": "system", "content" : messages.initialize}]
 
-# Requests response frm GM
-def invoke_gm(gm_player_dialog, user_msg, full_text_log):
+# Requests response from GM
+def invoke_gm(gm_player_dialog, user_msg, function_call, full_text_log):
   
     # Add player message to ongoing dialog and text log
     chat.append_dialog(gm_player_dialog, "user", user_msg)
@@ -58,19 +58,43 @@ def invoke_gm(gm_player_dialog, user_msg, full_text_log):
     completion = chat.safe_chat_completion(
         model=FAST_LLM_MODEL,
         messages=dialog,
-        function_call="auto"
+        function_call=function_call
     )
+     
+    # Debug chat completion
+    #print(f"\n{completion}\n")
     
-    # TODO: Implement error handline
-    #if completion == -1:
-    #    continue
+    finish_reason = chat.get_finish_reason(completion)
     
-    # Add GM response to dialog and text log if not a function
-    if not chat.is_function_call(completion):
-        assistant_msg = chat.get_content(completion)
-        chat.append_dialog(gm_player_dialog, "assistant", assistant_msg)
-        full_text_log += "GM: " + assistant_msg + "\n\n"
+    error_prefix = "Chat Complete Finish Reason"
 
+    error_suffix = "Please try again."
+    
+    #    Every response will include a finish_reason. The possible values for finish_reason are:
+    #
+    #    stop: API returned complete message, or a message terminated by one of the stop sequences provided via the stop parameter
+    #    length: Incomplete model output due to max_tokens parameter or token limit
+    #    function_call: The model decided to call a function
+    #    content_filter: Omitted content due to a flag from our content filters
+    #    null: API response still in progress or incomplete
+
+    # Handle responses from the Chat Completion API
+    match finish_reason:
+        
+        case "length":
+            print(f"{error_prefix}: length - Incomplete model output due to max_tokens parameter or token limit. {error_suffix}")
+
+        case "content_filter":
+            print("{error_prefix}: content_filter - Omitted content due to a flag from our content filters. {error_suffix}")
+        
+        case "null":
+            print("{error_prefix}: null - API response still in progress or incomplete. {error_suffix}")
+        
+        case "stop":
+            assistant_msg = chat.get_content(completion)
+            chat.append_dialog(gm_player_dialog, "assistant", assistant_msg)
+            full_text_log += "GM: " + assistant_msg + "\n\n"
+   
     return completion
 
 
@@ -248,6 +272,11 @@ def start_new_adventure():
         
     # Enter game dialog loop
     dialog_token_limit = 2000 # This is the max we will allow the dialog to grow before summarizing
+
+    # last_finish_reason is used to keep track of the finish reason from the API
+    # We use this to disallow back to back function calls from the API
+    last_finish_reason = "none"
+
     while chat.active:
 
         # Prompt user for there response
@@ -366,41 +395,115 @@ def start_new_adventure():
 
             # Send message to GM
             user_message = user_msg + " " + messages.reminder
-            completion = invoke_gm(dialog, user_message, full_text_log)
+            
+            # If the last call was a function call, then suppress functions
+            if last_finish_reason == "function_call":
+                completion = invoke_gm(dialog, user_message, "none", full_text_log)
+            else:   
+                completion = invoke_gm(dialog, user_message, "auto", full_text_log)
+            
+            assistamt_msg = ""
 
             # If the API response is a function call, execute the function
             if chat.is_function_call(completion):
-                
+                   
                 # Get function being called and arguments
                 function = chat.get_function(completion)
                 args = chat.get_function_args(completion)
-
-                # If it's a dice roll
-                if function == "roll_dice":
-                    
-                    die_to_roll = args['side_count']
-                    times_to_roll = args['roll_count']
-                    
-                    print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...\n")
-                    
-                    dice_outcome = roll_dice(times_to_roll, die_to_roll)           
-                    
-                    print(f"\nPlayer: {dice_outcome}\n")
-
-                    completion = invoke_gm(dialog, dice_outcome, full_text_log)
-                    #print(f"\nDice Roll Response: {completion}\n")
                 
-                # TODO: Add additional function calls here.
-                # elif function == "attack":
-                    #etc...
+                # Handle responses from the Chat Completion API
+                match function:
+                    
+                    case "roll_dice":
+                        
+                        # Get the arguments
+                        die_to_roll = args['side_count']
+                        times_to_roll = args['roll_count']
+                        
+                        # Let user know they are rolling the dice
+                        print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...\n")
+                        
+                        # Roll the dice the specified number of times
+                        dice_outcome = roll_dice(times_to_roll, die_to_roll)           
+                        
+                        # Show user what they got on their roll
+                        print(f"\nPlayer: {dice_outcome}\n")
+                        
+                        # Let the GM know what the roll was
+                        completion = invoke_gm(dialog, dice_outcome, "none", full_text_log)
+                        
+                        # Show the GM's response
+                        assistant_msg = chat.get_content(completion)
+                        print("\nGM: " + assistant_msg + "\n")
+                  
+                    #case "determine_initiative":
+                        
+                        # Get list of players and NPCs
+
+                        # Roll initiative for each and put characters in order dict array with stats
+
+                    case "attack":
+                        
+                        print("You are attacking...need to add handler code.")
+                        
+                        # Enter combat loop
+                        in_combat = True
+                        #while in_combat:
+                            
+                            # Get the attackers info
+                            
+                            # Get the target info
+
+                            # Attacker roll attack dice
+
+                            # GM evaluate target AC plus modifiers
+
+                            # If attack roll beats target defense
+
+                                # Attacker roll for damage
+
+                                # Adjust target hitpoint
+                            
+                            # Else
+
+                                # Respond with attacker miss message
+
+                            # If bad guys are dead or retreated
+
+                                # End combat (set in_combat = True)
+                            
+                            # Else
+
+                                # Go to next Attacker in initiative list
+
+                                # Attacker determine target
+                                # If attacker is player
+                                    # let them pick target from list
+                                # Else
+                                    # let AI pick target from list
+
+                    case _:
+                        print("The API returned a function call, but I don't have a case specified for '{case}'.") 
+            
+
+                last_finish_reason = "function_call"
+
+            # It's not a function call so just process the GM's response
+            else:
+                    
+                # Capture the GM's response
+                try: 
+                    # Print out chatbot response
+                    assistant_msg = chat.get_content(completion)
+                    print("\nGM: " + assistant_msg + "\n")
+
+                except:
+
+                    print("Unable to get the GM's response. Try again...")
+                
+                last_finish_reason = "stop"
 
 
-            # Capture the GM's response
-            assistant_msg = chat.get_content(completion)
-
-            # Print out chatbot response
-            print("\nGM: " + assistant_msg + "\n")
-    
 # Continue looping while the play is having dialog with the GM.
 while True:
 
@@ -408,7 +511,7 @@ while True:
     if skip_menu == False:
         i_main = 5 # Default menu item -- Number of menu items plus one (for default)
         main_menu = input(
-            "1. Start an new adventure\n" +
+            "1. Start a new adventure\n" +
             "2. Play a previous session\n" +
             "3. General Chat\n" +
             "> "
