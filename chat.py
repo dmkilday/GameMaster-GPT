@@ -31,11 +31,19 @@ os.system('color')
 show_tok = True
 active = True
 
+# Returns the finish reason in the chat completion
+def get_finish_reason(completion):
+    finish_reason = ""
+    try:
+        finish_reason = completion.choices[0].finish_reason
+    except:
+        print("Unable to get finish reason. Please try again.")
+    return finish_reason
+
 # Determines if the chat completion is returning a function call
 def is_function_call(completion):
     is_function = False
-    finish_reason = completion.choices[0].finish_reason
-    if finish_reason == "function_call":
+    if get_finish_reason(completion) == "function_call":
         is_function = True
     return is_function
 
@@ -51,7 +59,7 @@ def get_function_args(completion):
     arguments = reply_content.to_dict()['function_call']['arguments']
     args = json.loads(arguments)
     return args
-   
+
 # Shrink's dialog by x number of 
 def shrink_dialog(dialog, dialog_size, token_limit, model_name):
     # Check if the chat dialog is already within the token limit

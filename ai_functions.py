@@ -2,7 +2,7 @@
 functions=[
     {
         "name": "roll_dice",
-        "description": "Rolls dice. Only used when a player or DM wants to roll dice. Includes calls to in XdY format where Y is how many sides the die has and X is how many times it's rolled.",
+        "description": "Rolls dice. Only used when a player or DM wants to roll dice. Includes calls to in XdY format where Y is how many sides the die has and X is how many times it's rolled. Only invoke this function is the user is trying to roll the dice. Do not call this function if the user is reporting what they rolled.",
         "parameters": {
             "type": "object",
             "properties": {
