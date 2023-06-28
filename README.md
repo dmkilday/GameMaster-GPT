@@ -3,7 +3,12 @@ GameMaster-GPT is an exciting new open-source project aimed at revolutionizing t
 
 ## Requirements
 - Tested on Python 3.7.4 and 3.10.11
-- An OpenAI secret key, retrievable at [platform.openai.com](https://platform.openai.com/account/api-keys). Rename [oauth_secret.py.dist](https://github.com/dmkilday/GameMaster-GPT/blob/main/oauth_secret.py.dist) to *oauth_secret.py*, and copy your key into the *secret_key* variable within.
+- An OpenAI secret key, retrievable at [platform.openai.com](https://platform.openai.com/account/api-keys). Copy [.env.template](https://github.com/dmkilday/GameMaster-GPT/blob/main/.env.template) to *.env*. Uncomment _OPENAI_API_KEY_ and add your OpenAI secret key as a string to this entry.
+    ```
+    ### OPENAI
+    ## OPENAI_API_KEY - OpenAI API Key (Example: my-openai-api-key)
+    OPENAI_API_KEY=sk-1234567890abcdef
+    ```
 
 To install required libraries, run "pip install -r requirements.txt".
 
