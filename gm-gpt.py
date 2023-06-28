@@ -92,8 +92,9 @@ def invoke_gm(gm_player_dialog, user_msg, function_call, full_text_log):
         
         case "stop":
             assistant_msg = chat.get_content(completion)
-            chat.append_dialog(gm_player_dialog, "assistant", assistant_msg)
-            full_text_log += "GM: " + assistant_msg + "\n\n"
+            if assistant_msg != -1:
+                chat.append_dialog(gm_player_dialog, "assistant", assistant_msg)
+                full_text_log += "GM: " + assistant_msg + "\n\n"
    
     return completion
 
@@ -212,12 +213,12 @@ def start_chat():
                 
             # Capture the AI's response
             assistant_msg = chat.get_content(completion)
+            if assistant_msg != -1:
+                # Append the user input to the ongoing dialog
+                dialog.append({"role": "assistant", "content": assistant_msg})
 
-            # Append the user input to the ongoing dialog
-            dialog.append({"role": "assistant", "content": assistant_msg})
-
-            # Print out chatbot response
-            print("\nGM: " + assistant_msg + "\n")
+                # Print out chatbot response
+                print("\nGM: " + assistant_msg + "\n")
 
 
 # Initiates an adventure for the user
@@ -292,8 +293,8 @@ def start_new_adventure():
                     messages = adventure_dialog
                 )
                 adventure_premise = chat.get_content(completion)
-              
-                #print(f"\nPremise Response: {completion}\n")
+                #if adventure_premise != -1:
+                    #print(f"\nPremise Response: {completion}\n")
 
             # Set the premise to whatever the user entered
             else:
@@ -331,8 +332,12 @@ def start_new_adventure():
                 
                 if os.path.exists(log_dir + "/") == False:
                     os.mkdir(log_dir)
+                
+                if assistant_msg != -1:
+                    title = ''.join(c for c in assistant_msg if c.isalnum())
+                else:
+                    title = "ReallyExitedWithError"
                     
-                title = ''.join(c for c in assistant_msg if c.isalnum())
                 log_file_name = timestamp + "_" + title + ".json"
             
             print("\nGM: Saving log to "+log_file_name)
@@ -378,9 +383,10 @@ def start_new_adventure():
                 continue
                 
             assistant_msg = chat.get_content(completion)
-            dialog.append({"role": "assistant", "content": assistant_msg})
-            print("\nGM: " + assistant_msg + "\n")
-            full_text_log += "GM: " + assistant_msg + "\n\n"
+            if assistant_msg != -1:
+                dialog.append({"role": "assistant", "content": assistant_msg})
+                print("\nGM: " + assistant_msg + "\n")
+                full_text_log += "GM: " + assistant_msg + "\n\n"
             continue
         
         # There are no system commands, so determine what the user wants to do 
@@ -402,7 +408,7 @@ def start_new_adventure():
             else:   
                 completion = invoke_gm(dialog, user_message, "auto", full_text_log)
             
-            assistamt_msg = ""
+            assistant_msg = ""
 
             # If the API response is a function call, execute the function
             if chat.is_function_call(completion):
@@ -434,7 +440,8 @@ def start_new_adventure():
                         
                         # Show the GM's response
                         assistant_msg = chat.get_content(completion)
-                        print("\nGM: " + assistant_msg + "\n")
+                        if assistant_msg != -1:
+                            print("\nGM: " + assistant_msg + "\n")
                   
                     #case "determine_initiative":
                         
@@ -495,7 +502,8 @@ def start_new_adventure():
                 try: 
                     # Print out chatbot response
                     assistant_msg = chat.get_content(completion)
-                    print("\nGM: " + assistant_msg + "\n")
+                    if assistant_msg != -1:
+                        print("\nGM: " + assistant_msg + "\n")
 
                 except:
 
