@@ -450,13 +450,13 @@ def start_adventure(full_text_log):
                         times_to_roll = args['roll_count']
                         
                         # Let user know they are rolling the dice
-                        print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...\n")
+                        print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...")
                         
                         # Roll the dice the specified number of times
                         dice_outcome = roll_dice(times_to_roll, die_to_roll)           
                         
                         # Show user what they got on their roll
-                        print(f"\nPlayer: {dice_outcome}\n")
+                        print(f"\nPlayer: {dice_outcome}")
                         
                         # Let the GM know what the roll was
                         completion = invoke_gm(dialog, dice_outcome, "none", full_text_log)

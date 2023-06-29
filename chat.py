@@ -25,10 +25,11 @@ FAST_LLM_MODEL = os.getenv('FAST_LLM_MODEL')
 SMART_LLM_MODEL = os.getenv('SMART_LLM_MODEL')
 CREATIVE_TEMPERATURE = int(os.getenv('CREATIVE_TEMPERATURE'))
 DETERMINISTIC_TEMPERATURE = int(os.getenv('DETERMINISTIC_TEMPERATURE'))
+SHOW_TOKEN_STATUS = os.getenv("SHOW_TOKEN_STATUS")
+
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 os.system('color')
-show_tok = True
 active = True
 
 # Generates a character sheet based on a prompt
@@ -308,11 +309,6 @@ def get_content(apiresponse):
     if apiresponse == -1:
         content = -1
     else:
-        if show_tok:
-            tok_prompt = apiresponse['usage'].prompt_tokens
-            tok_complt = apiresponse['usage'].completion_tokens
-            tok_total = apiresponse['usage'].total_tokens
-            utils.color_print(f"\n{Fore.YELLOW}[Prompt:{Fore.WHITE}{Style.BRIGHT}{tok_prompt}{Fore.YELLOW}{Style.NORMAL}, Completions:{Fore.WHITE}{Style.BRIGHT}{tok_complt}{Fore.YELLOW}{Style.NORMAL}, Total:{Fore.WHITE}{Style.BRIGHT}{tok_total}{Fore.YELLOW}{Style.NORMAL}]{Style.RESET_ALL}")
         content = apiresponse['choices'][0]['message']['content']
     return content
     
@@ -361,6 +357,13 @@ def safe_chat_completion(model, messages, max_tokens=-1, temperature=1, function
             utils.color_print(f"{Fore.RED}OpenAI API service unavailable{Style.RESET_ALL}: {e}")
             return -1
         else:
+            # Show tokens if this is enabled.
+            if SHOW_TOKEN_STATUS == "True":
+                tok_prompt = response['usage'].prompt_tokens
+                tok_complt = response['usage'].completion_tokens
+                tok_total = response['usage'].total_tokens
+                utils.color_print(f"\n{Fore.YELLOW}[Prompt:{Fore.WHITE}{Style.BRIGHT}{tok_prompt}{Fore.YELLOW}{Style.NORMAL}, Completions:{Fore.WHITE}{Style.BRIGHT}{tok_complt}{Fore.YELLOW}{Style.NORMAL}, Total:{Fore.WHITE}{Style.BRIGHT}{tok_total}{Fore.YELLOW}{Style.NORMAL}]{Style.RESET_ALL}")
+
             return response
 
 # Generates an output based on an source example, target example, and source data
