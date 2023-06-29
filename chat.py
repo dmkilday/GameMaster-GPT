@@ -31,6 +31,122 @@ os.system('color')
 show_tok = True
 active = True
 
+# Generates a character sheet based on a prompt
+def gen_character(dialog, character_prompt, full_text_log):
+    
+    character_data = ""
+    
+    # Default character data as error condition. We will update to the 
+    # actual character data if we are successful in retreiving it.
+    character_data = "Unable to generate a character."
+
+    # Add player message to ongoing dialog and text log
+    append_dialog(dialog, "user", character_prompt)
+ 
+    # Call chat completion API
+    completion = safe_chat_completion(
+        model=FAST_LLM_MODEL,
+        messages=dialog,
+        function_call="none"
+    )
+     
+    # Debug chat completion
+    #print(f"\n{completion}\n")
+    
+    finish_reason = get_finish_reason(completion)
+    
+    error_prefix = "Chat Complete Finish Reason"
+
+    error_suffix = "Please try again."
+    
+    #    Every response will include a finish_reason. The possible values for finish_reason are:
+    #
+    #    stop: API returned complete message, or a message terminated by one of the stop sequences provided via the stop parameter
+    #    length: Incomplete model output due to max_tokens parameter or token limit
+    #    function_call: The model decided to call a function
+    #    content_filter: Omitted content due to a flag from our content filters
+    #    null: API response still in progress or incomplete
+
+    # Handle responses from the Chat Completion API
+    match finish_reason:
+        
+        case "length":
+            print(f"{error_prefix}: length - Incomplete model output due to max_tokens parameter or token limit. {error_suffix}")
+
+        case "content_filter":
+            print("{error_prefix}: content_filter - Omitted content due to a flag from our content filters. {error_suffix}")
+        
+        case "null":
+            print("{error_prefix}: null - API response still in progress or incomplete. {error_suffix}")
+        
+        case "stop":
+            assistant_msg = get_content(completion)
+            if assistant_msg != -1:
+                append_dialog(dialog, "assistant", assistant_msg)
+                full_text_log += "GM: " + assistant_msg + "\n\n"
+                character_data = assistant_msg
+    
+    return character_data
+
+
+# Returns s description of the start of the adventure
+def get_adventure_hook(dialog, full_text_log):
+    
+    # Default adventure hook as error condition. We will update to the 
+    # actual hook if we are successful in retreiving it.
+    adventure_hook = "Unable to retrieve adventure start information."
+    
+    user_msg = "Provide a brief two sentence description of the player's starting point for the adventure."
+
+    # Add player message to ongoing dialog and text log
+    append_dialog(dialog, "user", user_msg)
+ 
+    # Call chat completion API
+    completion = safe_chat_completion(
+        model=FAST_LLM_MODEL,
+        messages=dialog,
+        function_call="none"
+    )
+     
+    # Debug chat completion
+    #print(f"\n{completion}\n")
+    
+    finish_reason = get_finish_reason(completion)
+    
+    error_prefix = "Chat Complete Finish Reason"
+
+    error_suffix = "Please try again."
+    
+    #    Every response will include a finish_reason. The possible values for finish_reason are:
+    #
+    #    stop: API returned complete message, or a message terminated by one of the stop sequences provided via the stop parameter
+    #    length: Incomplete model output due to max_tokens parameter or token limit
+    #    function_call: The model decided to call a function
+    #    content_filter: Omitted content due to a flag from our content filters
+    #    null: API response still in progress or incomplete
+
+    # Handle responses from the Chat Completion API
+    match finish_reason:
+        
+        case "length":
+            print(f"{error_prefix}: length - Incomplete model output due to max_tokens parameter or token limit. {error_suffix}")
+
+        case "content_filter":
+            print("{error_prefix}: content_filter - Omitted content due to a flag from our content filters. {error_suffix}")
+        
+        case "null":
+            print("{error_prefix}: null - API response still in progress or incomplete. {error_suffix}")
+        
+        case "stop":
+            assistant_msg = get_content(completion)
+            if assistant_msg != -1:
+                append_dialog(dialog, "assistant", assistant_msg)
+                full_text_log += "GM: " + assistant_msg + "\n\n"
+                adventure_hook = assistant_msg
+    
+    return adventure_hook
+
+
 # Returns the finish reason in the chat completion
 def get_finish_reason(completion):
     finish_reason = ""
