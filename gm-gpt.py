@@ -140,12 +140,17 @@ def start_saved_adventure():
         
     res = []
     n = 0
+
+    # Get the list of files from the log directory
     files = os.listdir(log_dir)
     #print(files)
+    
+    # If there are no log files, let the user know
     if not files:
         print("GM: There are no previous log files.")
         #continue
         return True
+    # Otherwise, show the list of adventure log files
     else:
         outp = "\nFiles and directories in '" + log_dir + "':\n"
         for path in files:
@@ -155,10 +160,16 @@ def start_saved_adventure():
                 n+=1
                 
         print(outp)
+
+        # Prompt the user to select an adventure  log file to load
         read_num = input("GM: Enter the number of the log you want to view or B(b) to go back.\n\nPlayer: ")
+        
+        # Go back to previous menu if the user wants to go back
         if read_num == "B" or read_num == "b":
             #continue
             return True
+
+        # Otherwise load the log file
         elif utils.is_integer(read_num) and int(read_num) < len(res) and int(read_num) >= 0:
             #print("GM: Opening " + res[int(read_num)] + "...\n")
             #print(res)
@@ -177,7 +188,11 @@ def start_saved_adventure():
                     dialog.pop() # remove last user prompt from the list.
                     # print("... Deleted last user prompt\n") 
             #continue
-            return True
+            #return True
+            # Start the adventure
+            full_text_log = ""
+            start_adventure(full_text_log)
+
         else:
             print("GM: That's not a real entry. You should have entered the line number of the file you want to read.")
             #continue
@@ -222,92 +237,99 @@ def start_chat():
 
 
 # Initiates an adventure for the user
-def start_new_adventure():
+def initiate_new_adventure():
     global dialog
     global ooc_dialog
     global log_file_name
     
     full_text_log = ""
-    if prev_session == False:
-        #Import character sheet
-        character_file = input("\nGM: If you have a character sheet file in the Data/character directory, what is the file name? Leave blank and hit Enter for me to generate a character.\n\nPlayer: ")
-        if character_file != "":
-            while player_file_check:
-                if os.path.isfile(data_dir + "/" + character_dir + "/" + character_file):    
-                    with open(data_dir + "/" + character_dir + "/" + character_file, 'r') as file:
-                        character_data = file.read()
+
+    character_file = input("\nGM: If you have a character sheet file in the Data/character directory, what is the file name? Leave blank and hit Enter for me to generate a character.\n\nPlayer: ")
+    character_data = ""
+    
+    #Import character sheet if provided by user
+    if character_file != "":
+        while player_file_check:
+            if os.path.isfile(data_dir + "/" + character_dir + "/" + character_file):    
+                with open(data_dir + "/" + character_dir + "/" + character_file, 'r') as file:
+                    character_data = file.read()
+                break
+            else:
+                utils.color_print(f"\n{Fore.RED}Error{Style.RESET_ALL}: Sorry, I couldn't find that file. Try again? Leave blank and hit Enter for me to generate a character.")
+                character_file = input("\nPlayer: ")
+                if character_file != "":
+                    continue
+                else: # Can't open character sheet so generate one
+                    # Generate a character
+                    character_prompt = "The character is random. Please generate its name, race, class and other stats for me."
+                    character_data = chat.gen_character(dialog, character_prompt, full_text_log)
                     break
-                else:
-                    utils.color_print(f"\n{Fore.RED}Error{Style.RESET_ALL}: Sorry, I couldn't find that file. Try again? Leave blank and hit Enter for me to generate a character.")
-                    character_file = input("\nPlayer: ")
-                    if character_file != "":
-                        continue
-                    else:
-                        character_data = "The character is random. Please generate its name, race, class and other stats for me."
-                        break
-        else:
-            character_data = "The character is random. Please generate its name, race, class and other stats for me"
-            
-        dialog.append({"role": "user" , "content":"The players character sheet is as follows:\n\n" + character_data})
-           
-        # Welcome user and query the for initial chat topic
-        print("\nGM: What is the premise of your adventure? Leave blank and hit Enter for me to generate a premise.\n")
+    else:
+        # Generate a character
+        character_prompt = "The character is random. Please generate its name, race, class and other stats for me"
+        character_data = chat.gen_character(dialog, character_prompt, full_text_log)
+
+    dialog.append({"role": "user" , "content":"The players character sheet is as follows:\n\n" + character_data})
+
+    # Display character sheet
+    print(f"\nHere is your character information:\n\n{character_data}\n")
+
+    # Query the user for the premise of their adventure
+    print("\nGM: What is the premise of your adventure? Leave blank and hit Enter for me to generate a premise.\n")
+
+    # Prompt user for a premise
+    user_msg = input("Premise: ")
+
+    # If they didn't enter a premise, let's ask the API to generate one.
+    if (user_msg == ""):
 
         adventure_dialog = [
-                                {"role": "user" , "content": "Come up with a cool premise for a RPG adventure using the following character. " + character_data}
-                           ]
+                            {"role": "user", 
+                             "content": "Come up with a cool premise for a RPG adventure using the following character. " + character_data}]
+    
+        completion = chat.safe_chat_completion(
+            model=FAST_LLM_MODEL,  
+            messages = adventure_dialog
+        )
+        adventure_premise = chat.get_content(completion)
+      
+        #print(f"\nPremise Response: {completion}\n")
 
-        adventure_started = False
-
-        
+    # Set the premise to whatever the user entered
     else:
-        print("GM: " + dialog[-1]['content'] + "\n\n")
-        adventure_started = True
-        n = 0
-        for history in dialog:
-            if history["role"] == "assistant":
-                full_text_log += "GM: " + history["content"] + "\n\n"
-            elif history["role"] == "user":
-                full_text_log += "Player: " + history["content"] + "\n\n"
         
+        adventure_premise = user_msg
+
+    # Show welcome message and adventure premise.
+    dialog.append({"role":"user", "content": adventure_premise}) 
+    utils.color_print(messages.welcome + adventure_premise)
+    
+    # Start the adventure
+    start_adventure(full_text_log)
+       
+# Starts the adventure after it has been loaded
+def start_adventure(full_text_log):
+
+    global dialog
+    global ooc_dialog
+    global log_file_name
         
     # Enter game dialog loop
     dialog_token_limit = 2000 # This is the max we will allow the dialog to grow before summarizing
 
-    # last_finish_reason is used to keep track of the finish reason from the API
-    # We use this to disallow back to back function calls from the API
-    last_finish_reason = "none"
+    # Initialize last_finish_reason
+    last_finish_reason = "start"
+    
+    # Give the player the starting point of the adventure 
+    print(f"\nGM: {chat.get_adventure_hook(dialog, full_text_log)}\n")
 
     while chat.active:
 
         # Prompt user for there response
         user_msg = input("Player: ")
-
-        # If the adventure hasn't started yet, we need to get the adventure premise
-        if (adventure_started == False):
-
-            # If they didn't enter a premise, let's ask the API to generate one.
-            if (user_msg == ""):
-                completion = chat.safe_chat_completion(
-                    model=FAST_LLM_MODEL,  
-                    messages = adventure_dialog
-                )
-                adventure_premise = chat.get_content(completion)
-                #if adventure_premise != -1:
-                    #print(f"\nPremise Response: {completion}\n")
-
-            # Set the premise to whatever the user entered
-            else:
-                
-                adventure_premise = user_msg
-
-            # Show welcome message and adventure premise.
-            dialog.append({"role":"user", "content": adventure_premise}) 
-            utils.color_print(messages.welcome + adventure_premise)
-            adventure_started = True # set the adventure as now started  
-       
+      
         # Check if user wants to exit
-        elif user_msg == "exit":
+        if user_msg == "exit":
             print("\nIt was nice playing with you. Goodbye.\n")
             break
 
@@ -332,12 +354,8 @@ def start_new_adventure():
                 
                 if os.path.exists(log_dir + "/") == False:
                     os.mkdir(log_dir)
-                
-                if assistant_msg != -1:
-                    title = ''.join(c for c in assistant_msg if c.isalnum())
-                else:
-                    title = "ReallyExitedWithError"
                     
+                title = ''.join(c for c in assistant_msg if c.isalnum())
                 log_file_name = timestamp + "_" + title + ".json"
             
             print("\nGM: Saving log to "+log_file_name)
@@ -359,6 +377,7 @@ def start_new_adventure():
                 )
                 image_url = response['data'][0]['url']
                 print(f"\nGM: Go to {image_url} to see what I think the current scene looks like.")
+            last_finish_reason = "system_command"
 
         # TODO: Comment this condition (what is error test?)
         elif user_msg == "error_test":
@@ -367,6 +386,9 @@ def start_new_adventure():
                 messages = "error_test"
             )
             continue
+
+            last_finish_reason = "system_command"
+
 
         # Check if the user is talking to the GM out of character (OOC)
         elif utils.is_ooc(user_msg):
@@ -383,12 +405,13 @@ def start_new_adventure():
                 continue
                 
             assistant_msg = chat.get_content(completion)
-            if assistant_msg != -1:
-                dialog.append({"role": "assistant", "content": assistant_msg})
-                print("\nGM: " + assistant_msg + "\n")
-                full_text_log += "GM: " + assistant_msg + "\n\n"
+            dialog.append({"role": "assistant", "content": assistant_msg})
+            print("\nGM: " + assistant_msg + "\n")
+            full_text_log += "GM: " + assistant_msg + "\n\n"
             continue
         
+            last_finish_reason = "ooc"
+
         # There are no system commands, so determine what the user wants to do 
         else:
 
@@ -408,7 +431,7 @@ def start_new_adventure():
             else:   
                 completion = invoke_gm(dialog, user_message, "auto", full_text_log)
             
-            assistant_msg = ""
+            assistamt_msg = ""
 
             # If the API response is a function call, execute the function
             if chat.is_function_call(completion):
@@ -427,21 +450,20 @@ def start_new_adventure():
                         times_to_roll = args['roll_count']
                         
                         # Let user know they are rolling the dice
-                        print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...\n")
+                        print(f"\nRolling the {die_to_roll}-sided die {times_to_roll} time(s)...")
                         
                         # Roll the dice the specified number of times
                         dice_outcome = roll_dice(times_to_roll, die_to_roll)           
                         
                         # Show user what they got on their roll
-                        print(f"\nPlayer: {dice_outcome}\n")
+                        print(f"\nPlayer: {dice_outcome}")
                         
                         # Let the GM know what the roll was
                         completion = invoke_gm(dialog, dice_outcome, "none", full_text_log)
                         
                         # Show the GM's response
                         assistant_msg = chat.get_content(completion)
-                        if assistant_msg != -1:
-                            print("\nGM: " + assistant_msg + "\n")
+                        print("\nGM: " + assistant_msg + "\n")
                   
                     #case "determine_initiative":
                         
@@ -492,7 +514,6 @@ def start_new_adventure():
                     case _:
                         print("The API returned a function call, but I don't have a case specified for '{case}'.") 
             
-
                 last_finish_reason = "function_call"
 
             # It's not a function call so just process the GM's response
@@ -502,8 +523,7 @@ def start_new_adventure():
                 try: 
                     # Print out chatbot response
                     assistant_msg = chat.get_content(completion)
-                    if assistant_msg != -1:
-                        print("\nGM: " + assistant_msg + "\n")
+                    print("\nGM: " + assistant_msg + "\n")
 
                 except:
 
@@ -519,7 +539,7 @@ while True:
     if skip_menu == False:
         i_main = 5 # Default menu item -- Number of menu items plus one (for default)
         main_menu = input(
-            "1. Start a new adventure\n" +
+            "1. Initiate a new adventure\n" +
             "2. Play a previous session\n" +
             "3. General Chat\n" +
             "> "
@@ -533,11 +553,11 @@ while True:
     # Initiate the user's selection
     continue_loop = False
     if i_main == 2: # Enter into a previous session if it is selected
-        continue_loop = start_saved_adventure()
+        start_saved_adventure()
     elif i_main == 3: # Enter into general chat if it is selected
         start_chat()
     elif i_main == 1: # Start an adventure if it is selected
-        start_new_adventure()
+        initiate_new_adventure()
     else: # Exit the program
         print("Thanks for playing!")
         exit()
